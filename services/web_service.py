@@ -88,7 +88,13 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             --success-bg: rgba(16, 185, 129, 0.12);
             --purple: #8b5cf6;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden !important;
+            -webkit-text-size-adjust: 100%;
+        }
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
@@ -101,8 +107,10 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             color: var(--text-primary);
             line-height: 1.5;
             padding: 20px 28px 60px 28px;
-            max-width: 100vw;
-            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden !important;
+            position: relative;
             animation: fadeInPage 0.4s ease-out;
         }
         @keyframes fadeInPage {
@@ -834,59 +842,71 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Responsive Mobile Layout */
+        /* Responsive Mobile Layout (Flawless Containment, Zero Horizontal Overflow) */
         @media (max-width: 768px) {
             body {
-                padding: 14px 12px 60px 12px;
+                padding: 12px 10px 60px 10px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow-x: hidden !important;
             }
             .navbar {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                gap: 14px;
-                padding: 16px 14px;
-                margin-bottom: 16px;
-                border-radius: 14px;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 14px !important;
+                padding: 16px 12px !important;
+                margin-bottom: 16px !important;
+                border-radius: 16px !important;
             }
             .brand {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                gap: 8px;
-                width: 100%;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 8px !important;
+                width: 100% !important;
+                max-width: 100% !important;
             }
             .brand-icon {
-                width: 52px;
-                height: 52px;
-                font-size: 28px;
-                box-shadow: 0 8px 24px rgba(59, 130, 246, 0.45);
+                width: 48px !important;
+                height: 48px !important;
+                font-size: 26px !important;
+                box-shadow: 0 8px 24px rgba(59, 130, 246, 0.45) !important;
             }
             .brand-text h1 {
-                font-size: 19px;
-                line-height: 1.3;
-                text-align: center;
+                font-size: 18px !important;
+                line-height: 1.3 !important;
+                text-align: center !important;
+                word-break: break-word !important;
             }
             .brand-text p {
-                font-size: 12px;
-                text-align: center;
-                max-width: 320px;
-                margin: 0 auto;
+                font-size: 11.5px !important;
+                text-align: center !important;
+                max-width: 100% !important;
+                word-break: break-word !important;
+                padding: 0 4px !important;
             }
 
             .nav-wrapper {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
+                width: 100% !important;
+                max-width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 10px !important;
             }
             .monitor-pill {
-                width: 100%;
-                max-width: 340px;
-                justify-content: center;
-                text-align: center;
-                padding: 8px 14px;
-                font-size: 12px;
+                width: 100% !important;
+                max-width: 340px !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 8px 12px !important;
+                font-size: 11.5px !important;
+                box-sizing: border-box !important;
             }
 
             /* MATHEMATICALLY EXACT EQUAL BUTTONS ON MOBILE (3 rows of 2 buttons each) */
@@ -902,12 +922,12 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             .nav-actions .btn {
                 width: 100% !important;
                 min-width: 0 !important;
-                height: 46px !important;
-                min-height: 46px !important;
-                max-height: 46px !important;
+                height: 44px !important;
+                min-height: 44px !important;
+                max-height: 44px !important;
                 box-sizing: border-box !important;
-                padding: 0 8px !important;
-                font-size: 12px !important;
+                padding: 0 6px !important;
+                font-size: 11.5px !important;
                 font-weight: 700 !important;
                 display: flex !important;
                 align-items: center !important;
@@ -919,52 +939,94 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 border-radius: 12px !important;
             }
 
-            /* Health Ribbon on Mobile */
+            /* Health Ribbon on Mobile - Zero Overflow */
             .health-ribbon {
-                padding: 10px 14px;
-                margin-bottom: 16px;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+                padding: 10px 10px !important;
+                margin-bottom: 16px !important;
             }
             .health-meta {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                gap: 4px;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 6px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .health-meta-left {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                gap: 4px 6px !important;
+                font-size: 10.5px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                word-break: break-word !important;
+            }
+            .health-meta-right {
+                font-size: 10px !important;
+                padding: 2px 6px !important;
+                max-width: 100% !important;
+                word-break: break-word !important;
+            }
+            .health-bar-container {
+                height: 6px !important;
+                width: 100% !important;
             }
             .health-legend {
-                justify-content: center;
-                font-size: 11px;
-                gap: 10px;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                justify-content: center !important;
+                font-size: 10.5px !important;
+                gap: 6px 10px !important;
+                text-align: center !important;
+                width: 100% !important;
+                max-width: 100% !important;
             }
 
             /* Symmetrical 5-Card Stat Ribbon on Mobile */
             .stats-ribbon {
                 grid-template-columns: 1fr 1fr !important;
-                gap: 10px !important;
+                gap: 8px !important;
                 width: 100% !important;
                 max-width: 440px !important;
-                margin: 0 auto 18px auto !important;
+                margin: 0 auto 16px auto !important;
             }
             .stat-card {
-                padding: 14px 10px !important;
+                padding: 12px 8px !important;
                 align-items: center !important;
                 text-align: center !important;
                 justify-content: center !important;
+                min-width: 0 !important;
+                overflow: hidden !important;
+                box-sizing: border-box !important;
             }
             .stat-label {
                 text-align: center !important;
-                font-size: 10.5px !important;
+                font-size: 9.5px !important;
+                letter-spacing: 0 !important;
+                word-break: break-word !important;
+                line-height: 1.2 !important;
             }
             .stat-value {
-                font-size: 22px !important;
+                font-size: 20px !important;
                 text-align: center !important;
+                line-height: 1.2 !important;
             }
             .stat-desc {
-                font-size: 11px !important;
+                font-size: 9.5px !important;
                 text-align: center !important;
+                word-break: break-word !important;
+                line-height: 1.2 !important;
             }
             .stats-ribbon .stat-card:last-child {
                 grid-column: 1 / -1 !important;
-                padding: 16px 14px !important;
+                padding: 14px 10px !important;
                 background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 30%, rgba(59, 130, 246, 0.22) 100%) !important;
                 border-color: rgba(59, 130, 246, 0.45) !important;
                 box-shadow: 0 4px 20px rgba(59, 130, 246, 0.22) !important;
@@ -972,145 +1034,275 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
 
             /* Smooth Mobile Swipe Tabs */
             .tabs {
-                display: flex;
-                gap: 6px;
-                overflow-x: auto;
-                padding: 4px 2px 10px 2px;
-                margin-bottom: 16px;
-                scrollbar-width: none;
-                -webkit-overflow-scrolling: touch;
-                border-bottom: 1px solid var(--border);
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                display: flex !important;
+                gap: 6px !important;
+                overflow-x: auto !important;
+                padding: 4px 2px 10px 2px !important;
+                margin-bottom: 16px !important;
+                scrollbar-width: none !important;
+                -webkit-overflow-scrolling: touch !important;
+                border-bottom: 1px solid var(--border) !important;
             }
             .tabs::-webkit-scrollbar {
-                display: none;
+                display: none !important;
             }
             .tab-btn {
-                padding: 9px 14px;
-                font-size: 12px;
-                border-radius: 20px;
-                background: var(--surface);
-                border: 1px solid var(--border);
-                white-space: nowrap;
-                flex-shrink: 0;
+                padding: 8px 12px !important;
+                font-size: 11.5px !important;
+                border-radius: 18px !important;
+                background: var(--surface) !important;
+                border: 1px solid var(--border) !important;
+                white-space: nowrap !important;
+                flex-shrink: 0 !important;
             }
             .tab-btn.active {
-                background: linear-gradient(135deg, #3b82f6, #6366f1);
-                color: #fff;
-                border-color: var(--accent);
-                box-shadow: 0 4px 14px rgba(59, 130, 246, 0.45);
+                background: linear-gradient(135deg, #3b82f6, #6366f1) !important;
+                color: #fff !important;
+                border-color: var(--accent) !important;
+                box-shadow: 0 4px 14px rgba(59, 130, 246, 0.45) !important;
             }
 
             /* Mobile Toolbar and Search */
             .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-                padding: 12px;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+                padding: 10px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
             }
             .search-box {
-                width: 100%;
-                min-width: 0;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
             }
             .search-box input {
-                padding: 10px 14px;
-                font-size: 13px;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 9px 12px !important;
+                font-size: 12px !important;
+                box-sizing: border-box !important;
             }
             .filters {
-                display: flex;
-                gap: 6px;
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                padding-bottom: 4px;
-                scrollbar-width: none;
-                -webkit-overflow-scrolling: touch;
+                width: 100% !important;
+                max-width: 100% !important;
+                display: flex !important;
+                gap: 5px !important;
+                overflow-x: auto !important;
+                flex-wrap: nowrap !important;
+                padding-bottom: 4px !important;
+                scrollbar-width: none !important;
+                -webkit-overflow-scrolling: touch !important;
+                box-sizing: border-box !important;
             }
             .filters::-webkit-scrollbar {
-                display: none;
+                display: none !important;
             }
             .filter-btn {
-                flex-shrink: 0;
-                white-space: nowrap;
-                padding: 7px 12px;
-                font-size: 11px;
+                flex-shrink: 0 !important;
+                white-space: nowrap !important;
+                padding: 6px 10px !important;
+                font-size: 10.5px !important;
             }
 
             /* Mobile Account Grid */
             .accounts-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+                width: 100% !important;
+                max-width: 100% !important;
             }
             .account-card {
-                padding: 14px;
+                padding: 14px 12px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+            }
+            .account-email {
+                word-break: break-all !important;
+                overflow-wrap: anywhere !important;
             }
             .account-actions {
-                width: 100%;
-                justify-content: flex-end;
+                width: 100% !important;
+                justify-content: flex-end !important;
             }
 
-            /* Table to Card conversion */
+            /* Table to Card conversion - Strict Contained Rows */
             .table-responsive {
-                background: transparent;
-                border: none;
+                width: 100% !important;
+                max-width: 100% !important;
+                background: transparent !important;
+                border: none !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
             }
             .table-responsive table,
             .table-responsive thead,
             .table-responsive tbody,
             .table-responsive tr,
             .table-responsive td {
-                display: block;
-                width: 100%;
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
             }
-            .table-responsive thead { display: none; }
+            .table-responsive thead { display: none !important; }
             .table-responsive tr {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: 12px;
-                padding: 12px 14px;
-                margin-bottom: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                background: var(--surface) !important;
+                border: 1px solid var(--border) !important;
+                border-radius: 14px !important;
+                padding: 12px !important;
+                margin-bottom: 12px !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
             }
             .table-responsive td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 7px 0;
-                border: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                font-size: 12.5px;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                padding: 6px 0 !important;
+                border: none !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+                font-size: 11.5px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                gap: 8px !important;
             }
-            .table-responsive td:last-child { border-bottom: none; }
+            .table-responsive td:last-child { border-bottom: none !important; }
             .table-responsive td::before {
                 content: attr(data-label);
-                font-weight: 600;
-                font-size: 11px;
-                color: var(--text-secondary);
-                text-transform: uppercase;
-                margin-right: 10px;
-                flex-shrink: 0;
+                font-weight: 700 !important;
+                font-size: 10.5px !important;
+                color: var(--text-secondary) !important;
+                text-transform: uppercase !important;
+                flex-shrink: 0 !important;
+                min-width: 70px !important;
+                max-width: 90px !important;
+                text-align: left !important;
+                word-break: break-word !important;
+                line-height: 1.4 !important;
             }
-            .table-responsive .source-name { max-width: 180px; text-align: right; }
+            .table-responsive td > * {
+                min-width: 0 !important;
+                max-width: calc(100% - 95px) !important;
+                text-align: right !important;
+                word-break: break-word !important;
+                overflow-wrap: anywhere !important;
+            }
+            .table-responsive .source-name {
+                max-width: 140px !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+                display: inline-block !important;
+            }
+            .table-responsive .badge {
+                white-space: normal !important;
+                text-align: center !important;
+                display: inline-block !important;
+                line-height: 1.3 !important;
+            }
 
             /* Touch-Friendly Modals and Toast */
+            .modal-overlay {
+                padding: 10px !important;
+            }
             .modal {
-                padding: 20px 16px;
-                margin: 12px;
-                max-width: calc(100vw - 24px);
+                padding: 20px 14px !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
             }
             .modal-actions {
-                flex-direction: column-reverse;
-                gap: 8px;
+                flex-direction: column-reverse !important;
+                gap: 8px !important;
             }
             .modal-actions .btn {
-                width: 100%;
-                justify-content: center;
-                min-height: 44px;
+                width: 100% !important;
+                justify-content: center !important;
+                min-height: 44px !important;
             }
             .toast {
-                left: 14px;
-                right: 14px;
-                bottom: 14px;
-                justify-content: center;
-                text-align: center;
+                left: 10px !important;
+                right: 10px !important;
+                bottom: 12px !important;
+                justify-content: center !important;
+                text-align: center !important;
+                font-size: 12px !important;
+                padding: 10px 14px !important;
+            }
+        }
+
+        /* Micro-Screen Extra Protection (<= 380px screens like iPhone SE / mini Androids) */
+        @media (max-width: 380px) {
+            body {
+                padding: 8px 6px 50px 6px !important;
+            }
+            .navbar {
+                padding: 12px 8px !important;
+            }
+            .brand-icon {
+                width: 44px !important;
+                height: 44px !important;
+                font-size: 22px !important;
+            }
+            .brand-text h1 {
+                font-size: 16px !important;
+            }
+            .brand-text p {
+                font-size: 10.5px !important;
+            }
+            .nav-actions {
+                gap: 6px !important;
+            }
+            .nav-actions .btn {
+                height: 42px !important;
+                min-height: 42px !important;
+                max-height: 42px !important;
+                font-size: 11px !important;
+                padding: 0 4px !important;
+            }
+            .stats-ribbon {
+                gap: 6px !important;
+            }
+            .stat-card {
+                padding: 10px 6px !important;
+            }
+            .stat-label {
+                font-size: 9px !important;
+            }
+            .stat-value {
+                font-size: 18px !important;
+            }
+            .stat-desc {
+                font-size: 9px !important;
+            }
+            .table-responsive tr {
+                padding: 10px 8px !important;
+            }
+            .table-responsive td {
+                font-size: 11px !important;
+            }
+            .table-responsive td::before {
+                min-width: 65px !important;
+                max-width: 80px !important;
+                font-size: 10px !important;
+            }
+            .table-responsive td > * {
+                max-width: calc(100% - 85px) !important;
             }
         }
     </style>
@@ -1726,12 +1918,16 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 <tr class="${rowClass}">
                     <td data-label="#"><strong>${idx + 1}</strong></td>
                     <td data-label="Sender">
-                        <div><strong>${escapeHtml(em.sender_name || 'Vendor')}</strong></div>
-                        <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">${escapeHtml(em.sender_email)}</div>
+                        <div style="min-width: 0; word-break: break-word;">
+                            <div><strong>${escapeHtml(em.sender_name || 'Vendor')}</strong></div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary); word-break: break-all;">${escapeHtml(em.sender_email)}</div>
+                        </div>
                     </td>
                     <td data-label="Subject">
-                        <strong>${escapeHtml(em.subject)}</strong>
-                        <div style="color: var(--text-secondary); font-size: 11px; max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(em.body_preview || '')}</div>
+                        <div style="min-width: 0; word-break: break-word;">
+                            <div><strong>${escapeHtml(em.subject)}</strong></div>
+                            <div style="color: var(--text-secondary); font-size: 11px; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(em.body_preview || '')}</div>
+                        </div>
                     </td>
                     <td data-label="Priority">${badgeHtml}</td>
                     <td data-label="Files" style="text-align: center; font-weight: 700;">${em.attachment_count || 0}</td>
