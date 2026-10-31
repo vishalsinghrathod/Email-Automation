@@ -634,37 +634,42 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 margin: 0 auto;
             }
 
-            /* Clean, symmetrical 2-column centered mobile button grid */
+            /* All action buttons 100% equal width, centered, and uniform on mobile */
             .nav-actions {
                 width: 100%;
-                max-width: 440px;
+                max-width: 360px;
                 margin: 0 auto;
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 8px;
-                justify-content: center;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
             }
             .nav-actions .monitor-pill {
-                grid-column: 1 / -1;
                 width: 100%;
-                justify-content: center;
-                text-align: center;
-                padding: 8px 12px;
-                font-size: 12px;
-            }
-            .nav-actions .btn {
-                width: 100%;
-                min-height: 42px;
+                box-sizing: border-box;
+                display: flex;
                 justify-content: center;
                 align-items: center;
                 text-align: center;
-                padding: 9px 8px;
-                font-size: 12px;
-                white-space: normal;
-                line-height: 1.25;
+                padding: 10px 16px;
+                font-size: 12.5px;
+                border-radius: 10px;
+            }
+            .nav-actions .btn {
+                width: 100%;
+                min-height: 44px;
+                box-sizing: border-box;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 11px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                white-space: nowrap;
+                border-radius: 10px;
             }
             #btnResetDemo {
-                grid-column: 1 / -1;
                 width: 100%;
             }
 
