@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Vendor Inventory & Alert Monitoring Dashboard</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            --border: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --critical: #ef4444;
+            --critical-bg: #450a0a;
+            --warning: #f59e0b;
+            --warning-bg: #451a03;
+            --success: #10b981;
+            --success-bg: #064e3b;
+            --info: #3b82f6;
+            --info-bg: #1e3a8a;
+        }
+        html {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            padding: 24px;
+            line-height: 1.5;
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+            width: 100%;
+            max-width: 100%;
+        }
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            word-break: break-word;
+        }
+        .header-title p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 4px;
+            word-break: break-word;
+        }
+        .badge-live {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+            width: 100%;
+            max-width: 100%;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+            box-sizing: border-box;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        }
+        .stat-card.critical {
+            border-color: var(--critical);
+            background: linear-gradient(135deg, var(--surface) 60%, var(--critical-bg) 100%);
+        }
+        .stat-card.warning {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, var(--surface) 60%, var(--warning-bg) 100%);
+        }
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            word-break: break-word;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .stat-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            word-break: break-word;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            background: var(--surface);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 100%;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 220px;
+            max-width: 100%;
+        }
+        .search-box input {
+            width: 100%;
+            max-width: 100%;
+            padding: 9px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box input:focus {
+            border-color: var(--info);
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            padding-bottom: 4px;
+            max-width: 100%;
+        }
+        .filter-buttons::-webkit-scrollbar {
+            height: 4px;
+        }
+        .filter-buttons::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        .btn-filter {
+            background: var(--surface-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .btn-filter.active, .btn-filter:hover {
+            background: var(--info);
+            border-color: var(--info);
+            color: #fff;
+        }
+        .view-toggle-btn {
+            background: var(--surface-hover);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .table-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+            max-width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: left;
+        }
+        th {
+            background: #111827;
+            padding: 12px 14px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        tr.table-danger td {
+            background: rgba(239, 68, 68, 0.12);
+        }
+        tr.table-warning-critical td {
+            background: rgba(239, 68, 68, 0.07);
+        }
+        tr.table-warning td {
+            background: rgba(245, 158, 11, 0.07);
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+        }
+        .badge-critical {
+            background: var(--critical);
+            color: #fff;
+        }
+        .badge-warning {
+            background: var(--warning);
+            color: #000;
+        }
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        .vendor-tag {
+            background: #334155;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            max-width: 100%;
+            word-break: break-word;
+        }
+        .invoice-tag {
+            font-family: monospace;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            max-width: 100%;
+            word-break: break-all;
+        }
+        .sku-code {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #38bdf8;
+            font-family: monospace;
+            display: inline-block;
+            max-width: 100%;
+            word-break: break-all;
+        }
+        .source-file {
+            font-family: monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: inline-block;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        .val-text {
+            display: inline-block;
+        }
+        .font-bold { font-weight: 700; }
+        .font-mono { font-family: monospace; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-sm { font-size: 12px; }
+        .text-muted { color: var(--text-secondary); }
+
+        /* ========================================================= */
+        /* DESKTOP EXPLICIT CARD-MODE STYLING                        */
+        /* ========================================================= */
+        .table-container.card-mode {
+            background: transparent !important;
+            border: none !important;
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .table-container.card-mode table,
+        .table-container.card-mode thead,
+        .table-container.card-mode tbody,
+        .table-container.card-mode th,
+        .table-container.card-mode td,
+        .table-container.card-mode tr {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .table-container.card-mode thead {
+            display: none !important;
+        }
+        .table-container.card-mode tr {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+        .table-container.card-mode tr.table-danger {
+            border-color: var(--critical);
+            background: linear-gradient(135deg, var(--surface) 70%, var(--critical-bg) 100%);
+        }
+        .table-container.card-mode tr.table-warning-critical {
+            border-color: var(--critical);
+            background: linear-gradient(135deg, var(--surface) 75%, rgba(239, 68, 68, 0.15) 100%);
+        }
+        .table-container.card-mode tr.table-warning {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, var(--surface) 75%, var(--warning-bg) 100%);
+        }
+        .table-container.card-mode td {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: flex-start !important;
+            gap: 10px;
+            padding: 7px 0 !important;
+            border: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+            font-size: 13px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .table-container.card-mode td:last-child {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+        }
+        .table-container.card-mode td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            flex-shrink: 0;
+            max-width: 38%;
+            padding-top: 2px;
+        }
+        .table-container.card-mode .val-text {
+            flex: 1;
+            min-width: 0;
+            max-width: 62%;
+            text-align: right;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+        .table-container.card-mode .source-file {
+            max-width: 100% !important;
+            white-space: normal !important;
+            word-break: break-all !important;
+            overflow-wrap: anywhere !important;
+            display: inline-block !important;
+            text-align: right;
+        }
+
+        /* ========================================================= */
+        /* FULLY RESPONSIVE MOBILE & TABLET LAYOUT (<= 768px)        */
+        /* ========================================================= */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px 10px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding-bottom: 12px;
+                margin-bottom: 14px;
+            }
+            .header-title h1 {
+                font-size: clamp(16px, 4.5vw, 20px);
+                line-height: 1.25;
+            }
+            .header-title p {
+                font-size: 11px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                margin-bottom: 14px;
+            }
+            .stat-card {
+                padding: 10px 12px;
+                border-radius: 10px;
+            }
+            .stat-label {
+                font-size: 10px;
+                letter-spacing: 0.03em;
+            }
+            .stat-value {
+                font-size: clamp(18px, 5vw, 22px);
+            }
+            .stat-desc {
+                font-size: 10px;
+                line-height: 1.2;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+            .search-box {
+                min-width: 0;
+                width: 100%;
+            }
+            .search-box input {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+            .filter-buttons {
+                width: 100%;
+                padding-bottom: 4px;
+            }
+            .btn-filter {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            .view-toggle-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            /* Mobile default: Card View unless user selects .force-table */
+            .table-container:not(.force-table) {
+                background: transparent !important;
+                border: none !important;
+                overflow-x: hidden !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .table-container:not(.force-table) table,
+            .table-container:not(.force-table) thead,
+            .table-container:not(.force-table) tbody,
+            .table-container:not(.force-table) th,
+            .table-container:not(.force-table) td,
+            .table-container:not(.force-table) tr {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .table-container:not(.force-table) thead {
+                display: none !important;
+            }
+            .table-container:not(.force-table) tr {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                margin-bottom: 12px;
+                padding: 12px 14px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            }
+            .table-container:not(.force-table) tr.table-danger {
+                border-color: var(--critical);
+                background: linear-gradient(135deg, var(--surface) 70%, var(--critical-bg) 100%);
+            }
+            .table-container:not(.force-table) tr.table-warning-critical {
+                border-color: var(--critical);
+                background: linear-gradient(135deg, var(--surface) 75%, rgba(239, 68, 68, 0.15) 100%);
+            }
+            .table-container:not(.force-table) tr.table-warning {
+                border-color: var(--warning);
+                background: linear-gradient(135deg, var(--surface) 75%, var(--warning-bg) 100%);
+            }
+            .table-container:not(.force-table) td {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                gap: 10px;
+                padding: 7px 0 !important;
+                border: none !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+                font-size: 13px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .table-container:not(.force-table) td:last-child {
+                border-bottom: none !important;
+                padding-bottom: 0 !important;
+            }
+            .table-container:not(.force-table) td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--text-secondary);
+                text-align: left;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                flex-shrink: 0;
+                max-width: 38%;
+                padding-top: 2px;
+            }
+            .table-container:not(.force-table) .val-text {
+                flex: 1;
+                min-width: 0;
+                max-width: 62%;
+                text-align: right;
+                word-break: break-word;
+                overflow-wrap: anywhere;
+            }
+            .table-container:not(.force-table) .source-file {
+                max-width: 100% !important;
+                white-space: normal !important;
+                word-break: break-all !important;
+                overflow-wrap: anywhere !important;
+                display: inline-block !important;
+                text-align: right;
+            }
+
+            /* Explicit Table View on Mobile */
+            .table-container.force-table {
+                background: var(--surface) !important;
+                border: 1px solid var(--border) !important;
+                border-radius: 12px !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            .table-container.force-table table {
+                min-width: 680px !important;
+                width: 100% !important;
+                display: table !important;
+            }
+            .table-container.force-table thead {
+                display: table-header-group !important;
+            }
+            .table-container.force-table tbody {
+                display: table-row-group !important;
+            }
+            .table-container.force-table tr {
+                display: table-row !important;
+                margin-bottom: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .table-container.force-table th {
+                display: table-cell !important;
+                padding: 10px 12px !important;
+            }
+            .table-container.force-table td {
+                display: table-cell !important;
+                padding: 10px 12px !important;
+                border-bottom: 1px solid var(--border) !important;
+            }
+            .table-container.force-table td::before {
+                display: none !important;
+            }
+            .table-container.force-table .val-text {
+                display: inline !important;
+                max-width: 100% !important;
+            }
+        }
+
+        @media (max-width: 340px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-title">
+            <h1>Email Inventory & Anomaly Detection System</h1>
+            <p>Automated vendor ingestion pipeline &bull; Last synchronized: 2026-10-31 09:55:03</p>
+        </div>
+        <div>
+            <span class="badge-live">&#9679; LIVE MONITOR</span>
+        </div>
+    </header>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-label">Total Stock Items</span>
+            <span class="stat-value">13</span>
+            <span class="stat-desc">Distinct inventory products</span>
+        </div>
+        <div class="stat-card critical">
+            <span class="stat-label" style="color: var(--critical);">Critical Shortages</span>
+            <span class="stat-value" style="color: var(--critical);">3</span>
+            <span class="stat-desc">Stock &le; 10 units</span>
+        </div>
+        <div class="stat-card warning">
+            <span class="stat-label" style="color: var(--warning);">Price Warnings</span>
+            <span class="stat-value" style="color: var(--warning);">1</span>
+            <span class="stat-desc">Unit price &ge; $500.00</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Rejected Records</span>
+            <span class="stat-value">6</span>
+            <span class="stat-desc">Data quality audit violations</span>
+        </div>
+    </section>
+
+    <div class="toolbar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search by SKU, Product Name, Vendor, or Invoice #...">
+        </div>
+        <div class="filter-buttons">
+            <button class="btn-filter active" onclick="setFilter('all', this)">All (13)</button>
+            <button class="btn-filter" onclick="setFilter('critical', this)">Critical (3)</button>
+            <button class="btn-filter" onclick="setFilter('warning', this)">Warnings (1)</button>
+            <button class="btn-filter" onclick="setFilter('normal', this)">Healthy</button>
+            <button class="view-toggle-btn" id="viewToggleBtn" onclick="toggleViewMode()">📱 Card View</button>
+        </div>
+    </div>
+
+    <div class="table-container" id="tableContainer">
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Vendor</th>
+                    <th>SKU</th>
+                    <th>Product Description</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-right">Unit Price</th>
+                    <th>Invoice / PO</th>
+                    <th>Alert Status</th>
+                    <th>Source Attachment</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr class="table-danger" data-filter="critical">
+                <td data-label="#"><span class="val-text font-bold">1</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-APPL-KB</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Apple Magic Keyboard</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">0</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$129.00</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Out of Stock (0)</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_095503_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
+            </tr>
+            
+
+            <tr class="table-warning-critical" data-filter="critical">
+                <td data-label="#"><span class="val-text font-bold">2</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-LOGI-01</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Logitech MX Master 3S</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">3</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$99.99</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Low Stock (3)</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_095503_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
+            </tr>
+            
+
+            <tr class="table-warning-critical" data-filter="critical">
+                <td data-label="#"><span class="val-text font-bold">3</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">APX-UI-99</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Test Item UI</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">10</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$25.00</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Low Stock (10)</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261024_024110_ManualUpload_sample_ui_test.csv">20261024_024110_ManualUpload_sample_ui_test.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="table-warning" data-filter="warning">
+                <td data-label="#"><span class="val-text font-bold">4</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-DELL-4K</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Dell UltraSharp 32 4K</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">15</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$650.00</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-warning">WARNING: High Value ($650.00)</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_095503_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">5</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ACT-ROT</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Rotary Actuator Unit</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">25</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$320.00</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_095503_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">6</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-CYL-50</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Pneumatic Cylinder 50mm</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">40</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$89.50</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_095503_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">7</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ANKR-04</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Anker 100W GaN Charger</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">50</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$49.99</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_095503_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">8</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-VALVE-01</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Hydraulic Pressure Valve</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">75</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$145.00</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_095503_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">9</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ROD-100</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Threaded Steel Rod 1m</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">150</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$14.50</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">10</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-PIN-HD</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Heavy Duty Anchor Pin</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">300</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$5.75</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">11</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-BOLT-10</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Industrial Hex Bolt 10mm</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">500</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$0.85</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">12</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-WASH-10</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Titanium Washer 10mm</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">850</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$1.25</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">13</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-NUT-10</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Stainless Steel Nut M10</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">1200</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$0.45</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_095503_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
+            </tr>
+            
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let currentFilter = 'all';
+
+        function updateToggleBtnLabel() {
+            const btn = document.getElementById('viewToggleBtn');
+            const container = document.getElementById('tableContainer');
+            const isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                if (container.classList.contains('force-table')) {
+                    btn.innerHTML = '📱 Card View';
+                } else {
+                    btn.innerHTML = '📊 Table View';
+                }
+            } else {
+                if (container.classList.contains('card-mode')) {
+                    btn.innerHTML = '📊 Table View';
+                } else {
+                    btn.innerHTML = '📱 Card View';
+                }
+            }
+        }
+
+        function toggleViewMode() {
+            const container = document.getElementById('tableContainer');
+            const isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                container.classList.toggle('force-table');
+            } else {
+                container.classList.toggle('card-mode');
+            }
+            updateToggleBtnLabel();
+        }
+
+        function setFilter(filter, el) {
+            currentFilter = filter;
+            document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+            if (el) el.classList.add('active');
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#inventoryTable tbody tr');
+
+            rows.forEach(row => {
+                const filterTag = row.getAttribute('data-filter');
+                const text = row.innerText.toLowerCase();
+
+                const matchesFilter = (currentFilter === 'all') || (filterTag === currentFilter);
+                const matchesSearch = text.includes(search);
+
+                if (matchesFilter && matchesSearch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', applyFilters);
+        window.addEventListener('resize', updateToggleBtnLabel);
+        updateToggleBtnLabel();
+    </script>
+</body>
+</html>

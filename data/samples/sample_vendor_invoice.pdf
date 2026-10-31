@@ -1,0 +1,24 @@
+%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj
+4 0 obj << /Length 600 >>
+stream
+BT /F1 12 Tf 50 750 Td (INVOICE #: INV-2026-8801) Tj ET
+BT /F1 12 Tf 50 730 Td (Vendor: Nexus Logistics) Tj ET
+BT /F1 12 Tf 50 710 Td (Date: 2026-10-24) Tj ET
+BT /F1 12 Tf 50 690 Td (product_id | product_name | sku | quantity | price) Tj ET
+BT /F1 12 Tf 50 670 Td (NEX-101 | Logitech MX Master 3S | SKU-LOGI-01 | 3 | 99.99) Tj ET
+BT /F1 12 Tf 50 650 Td (NEX-202 | Dell UltraSharp 32 4K | SKU-DELL-4K | 15 | 650.00) Tj ET
+BT /F1 12 Tf 50 630 Td (NEX-303 | Apple Magic Keyboard | SKU-APPL-KB | 0 | 129.00) Tj ET
+BT /F1 12 Tf 50 610 Td (NEX-404 | Anker 100W GaN Charger | SKU-ANKR-04 | 50 | 49.99) Tj ET
+endstream
+endobj
+5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj
+xref
+0 6
+0000000000 65535 f 
+trailer << /Size 6 /Root 1 0 R >>
+startxref
+0
+%%EOF
