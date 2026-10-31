@@ -183,6 +183,13 @@ class TestWebServiceHandler(unittest.TestCase):
         res = json.loads(handler.get_response_body().decode("utf-8"))
         self.assertTrue(res["success"])
 
+    def test_api_reset_demo_clear_all(self):
+        payload = json.dumps({"clear_all": True}).encode("utf-8")
+        handler = DummyHandler("POST", "/api/reset-demo", payload)
+        self.assertEqual(handler.get_status_code(), 200)
+        res = json.loads(handler.get_response_body().decode("utf-8"))
+        self.assertTrue(res["success"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -132,6 +132,18 @@ class TestDatabaseService(unittest.TestCase):
         matching_after = [e for e in emails_after if e["message_id"] == "msg_test_delete_123"]
         self.assertEqual(len(matching_after), 0)
 
+    def test_clear_all_data(self):
+        from datetime import datetime
+        self.db.record_incoming_email(
+            message_id="msg_test_clear_all",
+            sender_email="clear@test.com",
+            subject="Clear All Test",
+            received_at=datetime.now(),
+        )
+        self.assertGreater(len(self.db.get_all_emails_history(10)), 0)
+        self.db.clear_all_data()
+        self.assertEqual(len(self.db.get_all_emails_history(10)), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

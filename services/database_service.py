@@ -691,3 +691,21 @@ class DatabaseService:
             """)
             conn.commit()
             logger.info("Demo data reset successfully.")
+
+    def clear_all_data(self) -> None:
+        """
+        Clears all email records, inventory items, logs, and queue entries for a completely clean testing slate.
+        Preserves monitored accounts and registered vendor profiles.
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM emails;")
+            cursor.execute("DELETE FROM email_logs;")
+            cursor.execute("DELETE FROM processing_queue;")
+            cursor.execute("DELETE FROM notifications;")
+            cursor.execute("DELETE FROM attachments;")
+            cursor.execute("DELETE FROM processed_files;")
+            cursor.execute("DELETE FROM rejected_records;")
+            cursor.execute("DELETE FROM inventory_items;")
+            conn.commit()
+            logger.info("Complete data wipe executed (clean slate).")

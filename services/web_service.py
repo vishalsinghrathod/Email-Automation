@@ -1840,13 +1840,26 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
     </div>
 
     <!-- MODAL: RESET DEMO CONFIRMATION -->
-    <div class="modal-overlay" id="resetModal">
-        <div class="modal">
-            <h2>Reset Demo Data?</h2>
-            <p>This will clear demo email logs, simulated attachments, and demo inventory items so you can re-run the demo cleanly. Production data will not be affected.</p>
-            <div class="modal-actions">
-                <button class="btn btn-outline" onclick="closeResetModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="executeResetDemo()">Yes, Reset Data</button>
+    <div class="modal-overlay" id="resetModal" onclick="if(event.target===this) closeResetModal()">
+        <div class="modal" style="max-width: 480px;">
+            <h2 style="margin-top: 0; color: #f87171; display: flex; align-items: center; gap: 8px;">
+                <span>🔄</span> Reset & Clean Slate
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.5;">
+                Clear simulated demo records or perform a complete wipe of all scanned email feed history so you can test fresh.
+            </p>
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; margin: 16px 0;">
+                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 13px; color: #fff;">
+                    <input type="checkbox" id="checkClearAllData" style="margin-top: 3px; accent-color: #ef4444; width: 16px; height: 16px;">
+                    <span>
+                        <strong>Complete Clean Slate (Wipe All Email Feed Records)</strong><br>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Clears all scanned emails, attachments, and inventory items so you have a completely fresh, empty dashboard to test new emails. (Monitored vendor settings stay saved).</span>
+                    </span>
+                </label>
+            </div>
+            <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-outline" onclick="closeResetModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="executeResetDemo()">Reset Data Now</button>
             </div>
         </div>
     </div>
@@ -2608,20 +2621,26 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             document.getElementById('resetModal').classList.remove('active');
         }
         async function executeResetDemo() {
+            const checkClearAll = document.getElementById('checkClearAllData');
+            const clearAll = checkClearAll ? checkClearAll.checked : false;
             closeResetModal();
-            showToast("Resetting demo data...", "info");
+            showToast(clearAll ? "Clearing all records & items..." : "Resetting demo data...", "info");
             try {
-                const res = await fetch('/api/reset-demo', { method: 'POST' });
+                const res = await fetch('/api/reset-demo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ clear_all: clearAll })
+                });
                 const data = await res.json();
                 if (data.success) {
-                    showToast("Demo data successfully reset!", "success");
-                    loadStatus();
-                    loadAccounts();
-                    loadEmails();
-                    loadInventory();
-                    loadRejected();
+                    showToast(data.message || (clearAll ? "All feed records wiped clean!" : "Demo data successfully reset!"), "success");
+                    await loadStatus();
+                    await loadAccounts();
+                    await loadEmails();
+                    await loadInventory();
+                    await loadRejected();
                 } else {
-                    showToast("Failed to reset demo data", "error");
+                    showToast("Failed to reset demo data: " + (data.error || "Unknown error"), "error");
                 }
             } catch (err) {
                 showToast("Error resetting data: " + err.message, "error");
@@ -2985,9 +3004,15 @@ class AutomationRequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/reset-demo":
+            clear_all = bool(payload.get("clear_all", False))
             try:
-                db.reset_demo_data()
-                self._send_json({"success": True, "message": "Demo data successfully reset."})
+                if clear_all:
+                    db.clear_all_data()
+                    msg = "All email feed records and inventory items wiped clean."
+                else:
+                    db.reset_demo_data()
+                    msg = "Demo data successfully reset."
+                self._send_json({"success": True, "message": msg})
             except Exception as exc:
                 self._send_json({"success": False, "error": str(exc)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
             return
