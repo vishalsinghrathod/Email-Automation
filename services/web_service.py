@@ -140,64 +140,21 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             gap: 14px;
         }
         .brand-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(30, 41, 68, 0.95) 0%, rgba(10, 15, 30, 0.98) 100%);
-            border: 2px solid rgba(59, 130, 246, 0.5);
+            font-size: 26px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), inset 0 0 14px rgba(59, 130, 246, 0.2);
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
             flex-shrink: 0;
-            cursor: pointer;
-            position: relative;
-            animation: brandBadgePulse 3.5s ease-in-out infinite;
         }
         .brand-icon:hover {
-            transform: scale(1.08);
-            border-color: rgba(139, 92, 246, 0.8);
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.6), inset 0 0 18px rgba(59, 130, 246, 0.35);
-        }
-        .logo-spinner-core {
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: continuousSpinLogo 6s linear infinite !important;
-            -webkit-animation: continuousSpinLogo 6s linear infinite !important;
-            transform-origin: 50% 50% !important;
-            -webkit-transform-origin: 50% 50% !important;
-            will-change: transform;
-        }
-        .brand-icon:hover .logo-spinner-core {
-            animation-duration: 2.5s !important;
-            -webkit-animation-duration: 2.5s !important;
-        }
-        .logo-spinner-core svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-            pointer-events: none;
-            filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.6));
-        }
-        @keyframes continuousSpinLogo {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @-webkit-keyframes continuousSpinLogo {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
-        }
-        @keyframes brandBadgePulse {
-            0%, 100% {
-                box-shadow: 0 0 18px rgba(59, 130, 246, 0.35), inset 0 0 12px rgba(59, 130, 246, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 28px rgba(139, 92, 246, 0.55), inset 0 0 16px rgba(139, 92, 246, 0.3);
-            }
+            transform: scale(1.08) rotate(4deg);
+            box-shadow: 0 8px 28px rgba(139, 92, 246, 0.55);
         }
         .brand-text h1 {
             font-size: 21px;
@@ -980,14 +937,10 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             .brand-icon {
                 width: 48px !important;
                 height: 48px !important;
-                border-radius: 50% !important;
-                box-shadow: 0 0 20px rgba(59, 130, 246, 0.45) !important;
-            }
-            .logo-spinner-core {
-                width: 34px !important;
-                height: 34px !important;
-                animation: continuousSpinLogo 6s linear infinite !important;
-                -webkit-animation: continuousSpinLogo 6s linear infinite !important;
+                font-size: 24px !important;
+                border-radius: 14px !important;
+                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45) !important;
+                flex-shrink: 0 !important;
             }
             .brand-text h1 {
                 font-size: 18px !important;
@@ -1223,12 +1176,13 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 font-size: 10.5px !important;
             }
 
-            /* Mobile Account Grid */
+            /* Mobile Account Grid - 100% Contained & Stacked */
             .accounts-grid {
                 grid-template-columns: 1fr !important;
                 gap: 12px !important;
                 width: 100% !important;
                 max-width: 100% !important;
+                box-sizing: border-box !important;
             }
             .account-card {
                 padding: 14px 12px !important;
@@ -1237,13 +1191,31 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 box-sizing: border-box !important;
                 overflow: hidden !important;
             }
+            .account-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
             .account-email {
                 word-break: break-all !important;
                 overflow-wrap: anywhere !important;
             }
+            .account-footer {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
             .account-actions {
                 width: 100% !important;
-                justify-content: flex-end !important;
+                display: flex !important;
+                gap: 8px !important;
+            }
+            .account-actions .btn {
+                flex: 1 !important;
+                justify-content: center !important;
+                min-height: 38px !important;
             }
 
             /* Table to Card conversion - Strict Contained Rows */
@@ -1285,6 +1257,22 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 padding: 6px 0 !important;
                 border: none !important;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+                font-size: 11.5px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                gap: 8px !important;
+            }
+            .table-responsive td:last-child { border-bottom: none !important; }
+            .table-responsive td[colspan] {
+                display: block !important;
+                text-align: center !important;
+                padding: 24px 10px !important;
+            }
+            .table-responsive td[colspan]::before {
+                display: none !important;
+            }
                 font-size: 11.5px !important;
                 width: 100% !important;
                 max-width: 100% !important;
@@ -1369,14 +1357,10 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             .brand-icon {
                 width: 42px !important;
                 height: 42px !important;
-                border-radius: 50% !important;
-                box-shadow: 0 0 16px rgba(59, 130, 246, 0.45) !important;
-            }
-            .logo-spinner-core {
-                width: 28px !important;
-                height: 28px !important;
-                animation: continuousSpinLogo 6s linear infinite !important;
-                -webkit-animation: continuousSpinLogo 6s linear infinite !important;
+                font-size: 20px !important;
+                border-radius: 12px !important;
+                box-shadow: 0 4px 14px rgba(59, 130, 246, 0.45) !important;
+                flex-shrink: 0 !important;
             }
             .brand-text h1 {
                 font-size: 16px !important;
@@ -1431,70 +1415,7 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
     <!-- Top Navigation Bar -->
     <header class="navbar">
         <div class="brand">
-            <div class="brand-icon" title="Automated Smart Inventory & Email Engine">
-                <div class="logo-spinner-core">
-                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="boxTop" x1="16" y1="16" x2="48" y2="32" gradientUnits="userSpaceOnUse">
-                                <stop offset="0%" stop-color="#38bdf8"/>
-                                <stop offset="100%" stop-color="#2563eb"/>
-                            </linearGradient>
-                            <linearGradient id="boxLeft" x1="16" y1="24" x2="32" y2="48" gradientUnits="userSpaceOnUse">
-                                <stop offset="0%" stop-color="#1d4ed8"/>
-                                <stop offset="100%" stop-color="#0f172a"/>
-                            </linearGradient>
-                            <linearGradient id="boxRight" x1="32" y1="24" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                                <stop offset="0%" stop-color="#8b5cf6"/>
-                                <stop offset="100%" stop-color="#4338ca"/>
-                            </linearGradient>
-                            <linearGradient id="orbitGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-                                <stop offset="0%" stop-color="#38bdf8"/>
-                                <stop offset="50%" stop-color="#8b5cf6"/>
-                                <stop offset="100%" stop-color="#10b981"/>
-                            </linearGradient>
-                            <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-                                <feGaussianBlur stdDeviation="1.5" result="blur"/>
-                                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                            </filter>
-                        </defs>
-                        
-                        <!-- Outer Orbital Sync Ring -->
-                        <circle cx="32" cy="32" r="28" stroke="url(#orbitGrad)" stroke-width="1.8" stroke-dasharray="14 8" opacity="0.85"/>
-                        <circle cx="32" cy="32" r="23" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
-                        
-                        <!-- Orbital Beacons / Sync Satellites -->
-                        <circle cx="32" cy="4" r="2.5" fill="#38bdf8" filter="url(#neonGlow)"/>
-                        <circle cx="32" cy="60" r="2.5" fill="#10b981" filter="url(#neonGlow)"/>
-                        <circle cx="60" cy="32" r="2.5" fill="#a855f7" filter="url(#neonGlow)"/>
-                        <circle cx="4" cy="32" r="2" fill="#fbbf24"/>
-
-                        <!-- 3D Isometric Inventory Box -->
-                        <!-- Top Face -->
-                        <polygon points="32,17 46,24 32,31 18,24" fill="url(#boxTop)" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
-                        
-                        <!-- Left Face -->
-                        <polygon points="18,24 32,31 32,47 18,40" fill="url(#boxLeft)" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
-                        
-                        <!-- Right Face -->
-                        <polygon points="32,31 46,24 46,40 32,47" fill="url(#boxRight)" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
-                        
-                        <!-- Parcel Sealing Tape (Top Flap) -->
-                        <polygon points="29,18.5 35,21.5 35,26.5 29,23.5" fill="#f59e0b" opacity="0.95"/>
-                        
-                        <!-- Barcode / Digital Scanner Lines on Left Face -->
-                        <line x1="22" y1="29" x2="28" y2="32" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round"/>
-                        <line x1="22" y1="33" x2="28" y2="36" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="1.5 1.5"/>
-                        <line x1="22" y1="37" x2="26" y2="39" stroke="#94a3b8" stroke-width="1" stroke-linecap="round"/>
-                        
-                        <!-- Smart Status LED on Right Face -->
-                        <circle cx="39" cy="35" r="2" fill="#10b981" filter="url(#neonGlow)"/>
-                        <circle cx="39" cy="35" r="0.8" fill="#ffffff"/>
-                        
-                        <!-- Central Core Glow Pulse -->
-                        <circle cx="32" cy="32" r="2" fill="#38bdf8" opacity="0.9" filter="url(#neonGlow)"/>
-                    </svg>
-                </div>
-            </div>
+            <div class="brand-icon">📦</div>
             <div class="brand-text">
                 <h1>Smart Vendor Email & Inventory Portal</h1>
                 <p>Automated Multi-Email Monitoring, Desktop Alerts & Anomaly Highlights</p>
