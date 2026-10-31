@@ -256,6 +256,11 @@ class InventoryProcessor:
             renamed_df["vendor_name"] = fallback_vendor_name
             mapping["[INFERRED]"] = "vendor_name"
 
+        # If product_id is missing but sku is present, use sku as canonical product_id
+        if "product_id" not in renamed_df.columns and "sku" in renamed_df.columns:
+            renamed_df["product_id"] = renamed_df["sku"]
+            mapping["[INFERRED_FROM_SKU]"] = "product_id"
+
         # If updated_date is missing, default to today's ISO date
         if "updated_date" not in renamed_df.columns:
             today_str = datetime.now().strftime("%Y-%m-%d")
