@@ -50,7 +50,12 @@ GMAIL_SCOPES: List[str] = [
 ]
 
 # Email Filtering Settings
-DEFAULT_KEYWORDS = ["inventory", "stock", "catalog", "supply", "item list", "inventory update"]
+DEFAULT_KEYWORDS = [
+    "inventory", "stock", "catalog", "supply", "supplies", "item list",
+    "inventory update", "product", "products", "product details", "submission",
+    "details", "invoice", "bill", "pricing", "price list", "quotation", "rate", "sku",
+    "vendor details", "order", "items"
+]
 _env_keywords = os.getenv("GMAIL_SEARCH_KEYWORDS")
 GMAIL_SEARCH_KEYWORDS: List[str] = (
     [k.strip().lower() for k in _env_keywords.split(",") if k.strip()]

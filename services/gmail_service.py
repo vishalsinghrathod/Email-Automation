@@ -8,6 +8,7 @@ and provides a separate Demo Inbox Provider for offline verification.
 import base64
 import email.utils
 import logging
+import re
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -139,12 +140,16 @@ class GmailService:
         query_parts.append("has:attachment")
 
         active_vendors = vendor_emails or REGISTERED_VENDOR_EMAILS
-        if active_vendors:
+        active_keywords = keywords or GMAIL_SEARCH_KEYWORDS
+
+        if active_vendors and active_keywords:
+            from_clause = " OR ".join([f"from:{email}" for email in active_vendors])
+            keyword_clause = " OR ".join([f'"{kw}"' if " " in kw else kw for kw in active_keywords])
+            query_parts.append(f"(({from_clause}) OR ({keyword_clause}))")
+        elif active_vendors:
             from_clause = " OR ".join([f"from:{email}" for email in active_vendors])
             query_parts.append(f"({from_clause})")
-
-        active_keywords = keywords or GMAIL_SEARCH_KEYWORDS
-        if active_keywords:
+        elif active_keywords:
             keyword_clause = " OR ".join([f'"{kw}"' if " " in kw else kw for kw in active_keywords])
             query_parts.append(f"({keyword_clause})")
 
@@ -233,6 +238,35 @@ class GmailService:
         # Collect parts recursively (handles nested multipart MIME)
         raw_parts = self._flatten_parts(payload)
 
+        # Extract message body text from parts or snippet
+        body_snippet = raw_message.get("snippet", "")
+        for p in raw_parts:
+            if p.get("mimeType") == "text/plain" and not p.get("filename"):
+                b64_data = p.get("body", {}).get("data", "")
+                if b64_data:
+                    try:
+                        decoded = base64.urlsafe_b64decode(b64_data).decode("utf-8", errors="ignore").strip()
+                        if decoded:
+                            body_snippet = decoded
+                            break
+                    except Exception:
+                        pass
+
+        if not body_snippet:
+            for p in raw_parts:
+                if p.get("mimeType") == "text/html" and not p.get("filename"):
+                    b64_data = p.get("body", {}).get("data", "")
+                    if b64_data:
+                        try:
+                            decoded = base64.urlsafe_b64decode(b64_data).decode("utf-8", errors="ignore").strip()
+                            clean_text = re.sub(r"<[^>]+>", " ", decoded)
+                            clean_text = re.sub(r"\s+", " ", clean_text).strip()
+                            if clean_text:
+                                body_snippet = clean_text
+                                break
+                        except Exception:
+                            pass
+
         return EmailMessage(
             message_id=msg_id,
             thread_id=thread_id,
@@ -242,6 +276,7 @@ class GmailService:
             received_at=received_at,
             raw_parts=raw_parts,
             raw_payload=payload,
+            body_snippet=body_snippet,
         )
 
     def _flatten_parts(self, payload: Dict[str, Any]) -> List[Dict[str, Any]]:

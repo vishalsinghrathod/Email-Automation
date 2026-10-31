@@ -1556,10 +1556,11 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                         <th>Files</th>
                         <th>Status</th>
                         <th>Received Time</th>
+                        <th style="text-align: center;">Action</th>
                     </tr>
                 </thead>
                 <tbody id="emailsTableBody">
-                    <tr><td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 30px;">Loading emails history...</td></tr>
+                    <tr><td colspan="8" style="text-align: center; color: var(--text-secondary); padding: 30px;">Loading emails history...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -1716,6 +1717,71 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             <div class="modal-actions">
                 <button class="btn btn-outline" onclick="closeResetModal()">Cancel</button>
                 <button class="btn btn-danger" onclick="executeResetDemo()">Yes, Reset Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EMAIL CONTENT INSPECTOR -->
+    <div class="modal-overlay" id="emailModal" onclick="if(event.target===this) closeEmailModal()">
+        <div class="modal" style="max-width: 680px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.18);">
+            <!-- Modal Header -->
+            <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: flex-start; gap: 14px;">
+                <div style="min-width: 0; flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 18px;">✉️</span>
+                        <span id="modalEmailPriority" class="badge badge-normal">Normal</span>
+                        <span id="modalEmailStatus" class="badge badge-success">PROCESSED</span>
+                    </div>
+                    <h3 id="modalEmailSubject" style="margin: 0; font-size: 17px; font-weight: 700; color: #fff; word-break: break-word; line-height: 1.4;">Email Subject</h3>
+                </div>
+                <button type="button" onclick="closeEmailModal()" style="background: none; border: none; color: var(--text-secondary); font-size: 26px; cursor: pointer; padding: 0 4px; line-height: 1; margin-top: -4px;">&times;</button>
+            </div>
+
+            <!-- Modal Scrollable Content -->
+            <div style="padding: 24px; overflow-y: auto; flex: 1;">
+                <!-- Sender Info Metadata Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+                    <div>
+                        <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">From / Sender</div>
+                        <div id="modalEmailSender" style="font-size: 13px; font-weight: 600; color: #fff; word-break: break-word;">-</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">Received Time</div>
+                        <div id="modalEmailReceived" style="font-size: 13px; color: var(--text-secondary);">-</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">Attachments</div>
+                        <div id="modalEmailFiles" style="font-size: 13px; font-weight: 700; color: #38bdf8;">-</div>
+                    </div>
+                </div>
+
+                <!-- Email Message Body Box -->
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">
+                            📝 Email Content & Vendor Note (What was sent in the email)
+                        </span>
+                        <button type="button" onclick="copyModalEmailBody()" class="btn btn-sm btn-outline" style="padding: 4px 10px; font-size: 11px; cursor: pointer;">📋 Copy Text</button>
+                    </div>
+                    <div id="modalEmailBody" style="white-space: pre-wrap; word-break: break-word; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; line-height: 1.6; color: #e2e8f0; background: rgba(0,0,0,0.3); padding: 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); max-height: 320px; overflow-y: auto;">
+                        (No message text body)
+                    </div>
+                </div>
+
+                <!-- Ingestion Notice -->
+                <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 12px;">
+                    <div style="font-size: 24px;">📦</div>
+                    <div style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">
+                        <strong style="color: #34d399;">Automated Ingestion Pipeline:</strong>
+                        Product inventory records from this email are parsed, validated, and synced into your database and stock table.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div style="padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); display: flex; justify-content: flex-end; gap: 12px;">
+                <button type="button" class="btn btn-outline" onclick="closeEmailModal()" style="padding: 8px 16px;">Close</button>
+                <button type="button" class="btn btn-primary" onclick="closeEmailModal(); setTab('inventory')">📦 View Inventory Table &rarr;</button>
             </div>
         </div>
     </div>
@@ -2006,7 +2072,7 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 30px;">No incoming emails match filter.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-secondary); padding: 30px;">No incoming emails match filter.</td></tr>`;
                 return;
             }
 
@@ -2028,7 +2094,9 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                     </td>
                     <td data-label="Subject">
                         <div style="min-width: 0; word-break: break-word;">
-                            <div><strong>${escapeHtml(em.subject)}</strong></div>
+                            <div onclick="openEmailModal(${em.id})" style="cursor: pointer;" title="Click to view full email content">
+                                <strong style="color: #38bdf8; text-decoration: underline; text-decoration-color: rgba(56,189,248,0.4);">${escapeHtml(em.subject)}</strong>
+                            </div>
                             <div style="color: var(--text-secondary); font-size: 11px; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(em.body_preview || '')}</div>
                         </div>
                     </td>
@@ -2036,9 +2104,51 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                     <td data-label="Files" style="text-align: center; font-weight: 700;">${em.attachment_count || 0}</td>
                     <td data-label="Status"><span class="badge ${em.status === 'SUCCESS' ? 'badge-success' : 'badge-normal'}">${em.status}</span></td>
                     <td data-label="Received" style="font-size: 11px; color: var(--text-secondary);">${em.received_at || ''}</td>
+                    <td data-label="Action" style="text-align: center;">
+                        <button type="button" class="btn btn-sm btn-outline" onclick="openEmailModal(${em.id})" style="padding: 6px 12px; font-size: 11px; white-space: nowrap; cursor: pointer;">👁️ View Content</button>
+                    </td>
                 </tr>
                 `;
             }).join('');
+        }
+
+        function openEmailModal(emailId) {
+            const em = emailsData.find(e => e.id === emailId);
+            if (!em) return;
+
+            document.getElementById('modalEmailSubject').textContent = em.subject || '(No Subject)';
+            document.getElementById('modalEmailSender').innerHTML = `<strong>${escapeHtml(em.sender_name || 'Vendor')}</strong> <span style="font-family: monospace; font-size: 11px; color: var(--text-secondary); display: block;">&lt;${escapeHtml(em.sender_email)}&gt;</span>`;
+            document.getElementById('modalEmailReceived').textContent = em.received_at || 'Just now';
+            document.getElementById('modalEmailFiles').textContent = `${em.attachment_count || 0} file(s) attached`;
+
+            const isHigh = (em.priority || '').toLowerCase().includes('high');
+            const priBadge = document.getElementById('modalEmailPriority');
+            priBadge.className = isHigh ? 'badge badge-high' : 'badge badge-normal';
+            priBadge.textContent = em.priority || 'Normal';
+
+            const statusBadge = document.getElementById('modalEmailStatus');
+            statusBadge.className = em.status === 'SUCCESS' ? 'badge badge-success' : 'badge badge-normal';
+            statusBadge.textContent = em.status || 'PROCESSED';
+
+            const bodyText = (em.body_preview && em.body_preview.trim()) ? em.body_preview.trim() : '(No plain text message body included in this email)';
+            document.getElementById('modalEmailBody').textContent = bodyText;
+
+            const modal = document.getElementById('emailModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeEmailModal() {
+            const modal = document.getElementById('emailModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function copyModalEmailBody() {
+            const text = document.getElementById('modalEmailBody').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Email content copied to clipboard!", "success");
+            }).catch(() => {
+                showToast("Could not copy text", "error");
+            });
         }
 
         function filterEmailsTable() {

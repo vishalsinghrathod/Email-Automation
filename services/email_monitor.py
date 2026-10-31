@@ -198,17 +198,21 @@ class EmailMonitor:
             with get_db(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute("""
-                    INSERT OR IGNORE INTO emails (
+                    INSERT INTO emails (
                         message_id, thread_id, sender_name, sender_email, subject,
                         body_preview, received_at, priority, status, attachment_count
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?);
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?)
+                    ON CONFLICT(message_id) DO UPDATE SET
+                        body_preview = CASE WHEN excluded.body_preview != '' THEN excluded.body_preview ELSE emails.body_preview END,
+                        priority = excluded.priority,
+                        attachment_count = excluded.attachment_count;
                 """, (
                     msg_id,
                     email_msg.thread_id,
                     sender_name,
                     sender_email,
                     subject,
-                    body_text_val[:200],
+                    body_text_val[:4000],
                     email_msg.received_at,
                     classification.category.value,
                     len([p for p in email_msg.raw_parts if p.get("filename")]),
