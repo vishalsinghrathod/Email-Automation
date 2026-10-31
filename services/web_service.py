@@ -2392,6 +2392,14 @@ class AutomationRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response_bytes)
 
+    def do_HEAD(self) -> None:
+        """Handles HTTP HEAD requests for uptime checkers and health monitors."""
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0")
+        self.end_headers()
+
     def do_OPTIONS(self) -> None:
         """Handles pre-flight CORS requests."""
         self.send_response(HTTPStatus.NO_CONTENT)
