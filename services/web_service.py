@@ -741,19 +741,81 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
         tr.table-warning td { background: var(--warning-bg); }
 
         .badge {
-            display: inline-block;
-            padding: 4px 9px;
-            border-radius: 7px;
-            font-size: 10.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.04em;
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            overflow-wrap: normal !important;
+            line-height: 1.3;
         }
         .badge-critical { background: var(--critical); color: #fff; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
         .badge-warning { background: var(--warning); color: #000; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
-        .badge-success { background: var(--success); color: #000; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
-        .badge-normal { background: #334155; color: #f8fafc; }
-        .badge-high { background: #dc2626; color: #fff; animation: pulse 2s infinite; }
+        .badge-success {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+        }
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+            animation: pulseSoft 2s infinite;
+        }
+        .badge-review {
+            background: rgba(168, 85, 247, 0.18);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.45);
+        }
+        .badge-normal {
+            background: rgba(100, 116, 139, 0.2);
+            color: #cbd5e1;
+            border: 1px solid rgba(100, 116, 139, 0.35);
+        }
+        .badge-high {
+            background: rgba(239, 68, 68, 0.22);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulseSoft {
+            0%, 100% { opacity: 0.85; }
+            50% { opacity: 1; }
+        }
+
+        .btn-view-content {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap !important;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-view-content:hover {
+            background: rgba(56, 189, 248, 0.25);
+            border-color: #38bdf8;
+            color: #fff;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+            transform: translateY(-1px);
+        }
 
         .tag-vendor {
             background: #1e293b;
@@ -1273,14 +1335,6 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             .table-responsive td[colspan]::before {
                 display: none !important;
             }
-                font-size: 11.5px !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                min-width: 0 !important;
-                box-sizing: border-box !important;
-                gap: 8px !important;
-            }
-            .table-responsive td:last-child { border-bottom: none !important; }
             .table-responsive td::before {
                 content: attr(data-label);
                 font-weight: 700 !important;
@@ -1301,6 +1355,37 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 word-break: break-word !important;
                 overflow-wrap: anywhere !important;
             }
+            .table-responsive td[data-label="Action"] {
+                display: flex !important;
+                justify-content: stretch !important;
+                align-items: center !important;
+                padding-top: 10px !important;
+                margin-top: 6px !important;
+                border-top: 1px dashed rgba(255, 255, 255, 0.12) !important;
+                border-bottom: none !important;
+                width: 100% !important;
+            }
+            .table-responsive td[data-label="Action"]::before {
+                display: none !important;
+            }
+            .table-responsive td[data-label="Action"] > * {
+                max-width: 100% !important;
+                width: 100% !important;
+                text-align: center !important;
+                justify-content: center !important;
+            }
+            .table-responsive td[data-label="Action"] .btn-view-content {
+                width: 100% !important;
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.3px !important;
+                border-radius: 10px !important;
+                background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(59, 130, 246, 0.25)) !important;
+                border: 1px solid rgba(56, 189, 248, 0.5) !important;
+                color: #fff !important;
+                box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2) !important;
+            }
             .table-responsive .source-name {
                 max-width: 140px !important;
                 overflow: hidden !important;
@@ -1309,9 +1394,14 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 display: inline-block !important;
             }
             .table-responsive .badge {
-                white-space: normal !important;
-                text-align: center !important;
-                display: inline-block !important;
+                white-space: nowrap !important;
+                word-break: keep-all !important;
+                overflow-wrap: normal !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 10.5px !important;
+                padding: 3px 8px !important;
                 line-height: 1.3 !important;
             }
 
@@ -2077,11 +2167,38 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             }
 
             tbody.innerHTML = filtered.map((em, idx) => {
+                // Priority Badge
+                let priClass = 'badge-normal';
+                let priText = em.priority || 'Normal';
+                if (priText.toLowerCase().includes('high')) {
+                    priClass = 'badge-high';
+                    priText = '🚨 HIGH PRIORITY';
+                } else if (priText.toLowerCase().includes('review')) {
+                    priClass = 'badge-review';
+                    priText = '🔍 REVIEW';
+                } else if (priText.toLowerCase().includes('promo')) {
+                    priClass = 'badge-normal';
+                    priText = '🏷️ PROMO';
+                }
+                const badgeHtml = `<span class="badge ${priClass}">${escapeHtml(priText)}</span>`;
+
+                // Status Badge (Pending, Success, Failed)
+                let statusClass = 'badge-normal';
+                let statusText = em.status || 'PENDING';
+                if (statusText === 'SUCCESS') {
+                    statusClass = 'badge-success';
+                    statusText = '✓ PROCESSED';
+                } else if (statusText === 'PENDING') {
+                    statusClass = 'badge-pending';
+                    statusText = '⏳ PENDING';
+                } else if (statusText === 'FAILED') {
+                    statusClass = 'badge-critical';
+                    statusText = '✕ FAILED';
+                }
+                const statusHtml = `<span class="badge ${statusClass}">${escapeHtml(statusText)}</span>`;
+
                 const isHigh = (em.priority || '').toLowerCase().includes('high');
                 const rowClass = isHigh ? 'email-high-priority' : '';
-                const badgeHtml = isHigh 
-                    ? `<span class="badge badge-high">🚨 HIGH PRIORITY: ACTION REQUIRED</span>`
-                    : `<span class="badge badge-normal">${escapeHtml(em.priority || 'Normal')}</span>`;
 
                 return `
                 <tr class="${rowClass}">
@@ -2102,10 +2219,10 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                     </td>
                     <td data-label="Priority">${badgeHtml}</td>
                     <td data-label="Files" style="text-align: center; font-weight: 700;">${em.attachment_count || 0}</td>
-                    <td data-label="Status"><span class="badge ${em.status === 'SUCCESS' ? 'badge-success' : 'badge-normal'}">${em.status}</span></td>
+                    <td data-label="Status">${statusHtml}</td>
                     <td data-label="Received" style="font-size: 11px; color: var(--text-secondary);">${em.received_at || ''}</td>
                     <td data-label="Action" style="text-align: center;">
-                        <button type="button" class="btn btn-sm btn-outline" onclick="openEmailModal(${em.id})" style="padding: 6px 12px; font-size: 11px; white-space: nowrap; cursor: pointer;">👁️ View Content</button>
+                        <button type="button" class="btn-view-content" onclick="openEmailModal(${em.id})">👁️ View Content</button>
                     </td>
                 </tr>
                 `;
@@ -2127,8 +2244,16 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             priBadge.textContent = em.priority || 'Normal';
 
             const statusBadge = document.getElementById('modalEmailStatus');
-            statusBadge.className = em.status === 'SUCCESS' ? 'badge badge-success' : 'badge badge-normal';
-            statusBadge.textContent = em.status || 'PROCESSED';
+            if (em.status === 'SUCCESS') {
+                statusBadge.className = 'badge badge-success';
+                statusBadge.textContent = '✓ PROCESSED';
+            } else if (em.status === 'PENDING') {
+                statusBadge.className = 'badge badge-pending';
+                statusBadge.textContent = '⏳ PENDING';
+            } else {
+                statusBadge.className = 'badge badge-normal';
+                statusBadge.textContent = em.status || 'PENDING';
+            }
 
             const bodyText = (em.body_preview && em.body_preview.trim()) ? em.body_preview.trim() : '(No plain text message body included in this email)';
             document.getElementById('modalEmailBody').textContent = bodyText;
