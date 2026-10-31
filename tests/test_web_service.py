@@ -163,6 +163,26 @@ class TestWebServiceHandler(unittest.TestCase):
         data = json.loads(handler.get_response_body().decode("utf-8"))
         self.assertIn("success", data)
 
+    def test_api_delete_email(self):
+        from datetime import datetime
+        from config.settings import DATABASE_PATH
+        from services.database_service import DatabaseService
+        db = DatabaseService(DATABASE_PATH)
+        email_id = db.record_incoming_email(
+            message_id="msg_web_del_456",
+            sender_email="test@del.com",
+            subject="Delete Test",
+            received_at=datetime.now(),
+            attachment_count=1,
+            status="SUCCESS",
+        )
+
+        payload = json.dumps({"id": email_id, "delete_from_gmail": False}).encode("utf-8")
+        handler = DummyHandler("POST", "/api/emails/delete", payload)
+        self.assertEqual(handler.get_status_code(), 200)
+        res = json.loads(handler.get_response_body().decode("utf-8"))
+        self.assertTrue(res["success"])
+
 
 if __name__ == "__main__":
     unittest.main()

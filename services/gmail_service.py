@@ -362,6 +362,23 @@ class GmailService:
             logger.error("Failed to update status for message '%s': %s", message_id, exc)
             return False
 
+    def trash_message(self, message_id: str) -> bool:
+        """
+        Moves an email to Gmail Trash (safe delete).
+        """
+        if not self.service:
+            if not self.authenticate():
+                return False
+        try:
+            self._execute_with_retry(
+                lambda: self.service.users().messages().trash(userId="me", id=message_id).execute()
+            )
+            logger.info("Moved email '%s' to Gmail Trash.", message_id)
+            return True
+        except Exception as exc:
+            logger.warning("Failed to trash Gmail message '%s': %s", message_id, exc)
+            return False
+
     @staticmethod
     def _execute_with_retry(api_call, max_retries: int = 3, initial_delay: float = 1.5):
         """
@@ -466,4 +483,10 @@ class DemoInboxProvider:
         """Simulates marking an email as read/processed."""
         self.processed_ids.add(message_id)
         logger.info("[DEMO MODE] Marked simulated email '%s' as processed.", message_id)
+        return True
+
+    def trash_message(self, message_id: str) -> bool:
+        """Simulates trashing an email in demo mode."""
+        self.processed_ids.add(message_id)
+        logger.info("[DEMO MODE] Simulated email '%s' moved to trash.", message_id)
         return True

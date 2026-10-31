@@ -817,6 +817,33 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             transform: translateY(-1px);
         }
 
+        .action-btn-group {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-delete-row {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            font-size: 13px;
+            color: #f87171;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-delete-row:hover {
+            background: rgba(239, 68, 68, 0.28);
+            border-color: #ef4444;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+            transform: translateY(-1px);
+        }
+
         .tag-vendor {
             background: #1e293b;
             border: 1px solid var(--border);
@@ -1374,8 +1401,15 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 text-align: center !important;
                 justify-content: center !important;
             }
-            .table-responsive td[data-label="Action"] .btn-view-content {
+            .table-responsive td[data-label="Action"] .action-btn-group {
+                display: flex !important;
                 width: 100% !important;
+                gap: 8px !important;
+                max-width: 100% !important;
+            }
+            .table-responsive td[data-label="Action"] .btn-view-content {
+                flex: 1 !important;
+                width: auto !important;
                 padding: 10px 14px !important;
                 font-size: 13px !important;
                 font-weight: 700 !important;
@@ -1385,6 +1419,12 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 border: 1px solid rgba(56, 189, 248, 0.5) !important;
                 color: #fff !important;
                 box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2) !important;
+            }
+            .table-responsive td[data-label="Action"] .btn-delete-row {
+                flex-shrink: 0 !important;
+                padding: 10px 16px !important;
+                font-size: 15px !important;
+                border-radius: 10px !important;
             }
             .table-responsive .source-name {
                 max-width: 140px !important;
@@ -1869,9 +1909,38 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             </div>
 
             <!-- Modal Footer -->
-            <div style="padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); display: flex; justify-content: flex-end; gap: 12px;">
-                <button type="button" class="btn btn-outline" onclick="closeEmailModal()" style="padding: 8px 16px;">Close</button>
-                <button type="button" class="btn btn-primary" onclick="closeEmailModal(); setTab('inventory')">📦 View Inventory Table &rarr;</button>
+            <div style="padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <div>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteCurrentEmail()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 12px; background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.45); color: #f87171;">
+                        🗑️ Delete Email Record
+                    </button>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-outline" onclick="closeEmailModal()" style="padding: 8px 16px;">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="closeEmailModal(); setTab('inventory')">📦 View Inventory Table &rarr;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DELETE EMAIL CONFIRMATION -->
+    <div class="modal-overlay" id="deleteEmailModal" onclick="if(event.target===this) closeDeleteEmailModal()">
+        <div class="modal" style="max-width: 440px;">
+            <h2 style="color: #ef4444; display: flex; align-items: center; gap: 8px; margin-top: 0; font-size: 18px;">
+                <span>🗑️</span> Delete Email Record?
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+                Are you sure you want to delete this email record from the system? This will remove it from your live email feed and audit log.
+            </p>
+            <div class="form-check" style="margin: 0 0 18px 0; background: rgba(255,255,255,0.03); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="checkTrashInGmail" style="cursor: pointer; width: 16px; height: 16px;">
+                <label for="checkTrashInGmail" style="cursor: pointer; font-size: 12px; color: #e2e8f0; margin: 0;">
+                    Also move message to <strong>Gmail Trash</strong> (mail.google.com)
+                </label>
+            </div>
+            <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-outline" onclick="closeDeleteEmailModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDeleteEmail" onclick="executeDeleteEmail()">Yes, Delete Record</button>
             </div>
         </div>
     </div>
@@ -2222,14 +2291,21 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                     <td data-label="Status">${statusHtml}</td>
                     <td data-label="Received" style="font-size: 11px; color: var(--text-secondary);">${em.received_at || ''}</td>
                     <td data-label="Action" style="text-align: center;">
-                        <button type="button" class="btn-view-content" onclick="openEmailModal(${em.id})">👁️ View Content</button>
+                        <div class="action-btn-group">
+                            <button type="button" class="btn-view-content" onclick="openEmailModal(${em.id})">👁️ View Content</button>
+                            <button type="button" class="btn-delete-row" onclick="promptDeleteEmail(${em.id}, event)" title="Delete email record">🗑️</button>
+                        </div>
                     </td>
                 </tr>
                 `;
             }).join('');
         }
 
+        let emailToDeleteId = null;
+        let currentModalEmailId = null;
+
         function openEmailModal(emailId) {
+            currentModalEmailId = emailId;
             const em = emailsData.find(e => e.id === emailId);
             if (!em) return;
 
@@ -2263,8 +2339,64 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
         }
 
         function closeEmailModal() {
+            currentModalEmailId = null;
             const modal = document.getElementById('emailModal');
             if (modal) modal.classList.remove('active');
+        }
+
+        function confirmDeleteCurrentEmail() {
+            if (!currentModalEmailId) return;
+            promptDeleteEmail(currentModalEmailId);
+        }
+
+        function promptDeleteEmail(emailId, event) {
+            if (event) event.stopPropagation();
+            emailToDeleteId = emailId;
+            const modal = document.getElementById('deleteEmailModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeDeleteEmailModal() {
+            emailToDeleteId = null;
+            const modal = document.getElementById('deleteEmailModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        async function executeDeleteEmail() {
+            if (!emailToDeleteId) return;
+            const checkTrash = document.getElementById('checkTrashInGmail');
+            const deleteFromGmail = checkTrash ? checkTrash.checked : false;
+
+            const btn = document.getElementById('btnConfirmDeleteEmail');
+            btn.disabled = true;
+            btn.textContent = 'Deleting...';
+
+            try {
+                const res = await fetch('/api/emails/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: emailToDeleteId, delete_from_gmail: deleteFromGmail }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    let msg = "Email record deleted successfully!";
+                    if (data.trashed_in_gmail) {
+                        msg += " (Moved to Gmail Trash)";
+                    }
+                    showToast(msg, "success");
+                    closeDeleteEmailModal();
+                    closeEmailModal();
+                    await loadEmails();
+                    await loadStatus();
+                } else {
+                    showToast("Failed to delete email: " + (data.error || "Unknown error"), "error");
+                }
+            } catch (err) {
+                showToast("Error deleting email: " + err.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Yes, Delete Record';
+            }
         }
 
         function copyModalEmailBody() {
@@ -2800,6 +2932,24 @@ class AutomationRequestHandler(BaseHTTPRequestHandler):
             acc_id = int(payload.get("id", 0))
             ok = db.delete_monitored_account(acc_id)
             self._send_json({"success": ok})
+            return
+
+        if path == "/api/emails/delete":
+            email_id = int(payload.get("id", 0))
+            delete_from_gmail = bool(payload.get("delete_from_gmail", False))
+            msg_id = db.delete_email_by_id(email_id)
+
+            trashed_in_gmail = False
+            if msg_id and delete_from_gmail:
+                try:
+                    from services.gmail_service import GmailService
+                    gmail = GmailService()
+                    if gmail.authenticate():
+                        trashed_in_gmail = gmail.trash_message(msg_id)
+                except Exception as exc:
+                    logger.debug("Could not trash message in Gmail: %s", exc)
+
+            self._send_json({"success": bool(msg_id), "trashed_in_gmail": trashed_in_gmail})
             return
 
         if path == "/api/test-desktop-alert":

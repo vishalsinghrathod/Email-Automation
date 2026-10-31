@@ -109,6 +109,29 @@ class TestDatabaseService(unittest.TestCase):
         stats = self.db.get_summary_statistics()
         self.assertEqual(stats["total_rejected_records"], 1)
 
+    def test_delete_email_by_id(self):
+        from datetime import datetime
+        email_id = self.db.record_incoming_email(
+            message_id="msg_test_delete_123",
+            sender_email="test@vendor.com",
+            subject="Test Stock Email",
+            received_at=datetime.now(),
+            attachment_count=1,
+            status="SUCCESS",
+        )
+        self.assertIsNotNone(email_id)
+        emails = self.db.get_all_emails_history(limit=10)
+        matching = [e for e in emails if e["message_id"] == "msg_test_delete_123"]
+        self.assertEqual(len(matching), 1)
+        self.assertEqual(matching[0]["id"], email_id)
+
+        deleted_msg_id = self.db.delete_email_by_id(email_id)
+        self.assertEqual(deleted_msg_id, "msg_test_delete_123")
+
+        emails_after = self.db.get_all_emails_history(limit=10)
+        matching_after = [e for e in emails_after if e["message_id"] == "msg_test_delete_123"]
+        self.assertEqual(len(matching_after), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

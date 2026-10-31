@@ -550,6 +550,71 @@ class DatabaseService:
             conn.commit()
             return cursor.rowcount > 0
 
+    def record_incoming_email(
+        self,
+        message_id: str,
+        sender_email: str,
+        subject: str,
+        sender_name: Optional[str] = None,
+        thread_id: Optional[str] = None,
+        body_preview: Optional[str] = None,
+        received_at: Optional[datetime] = None,
+        priority: str = "Normal",
+        status: str = "PENDING",
+        attachment_count: int = 0,
+    ) -> int:
+        """
+        Inserts or updates an incoming email record into the 'emails' audit table and returns its row ID.
+        """
+        rec_time = received_at or datetime.now()
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO emails (
+                    message_id, thread_id, sender_name, sender_email, subject,
+                    body_preview, received_at, priority, status, attachment_count
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(message_id) DO UPDATE SET
+                    body_preview = CASE WHEN excluded.body_preview IS NOT NULL AND excluded.body_preview != '' THEN excluded.body_preview ELSE emails.body_preview END,
+                    priority = excluded.priority,
+                    status = excluded.status,
+                    attachment_count = excluded.attachment_count;
+            """, (
+                message_id,
+                thread_id,
+                sender_name or sender_email,
+                sender_email,
+                subject,
+                (body_preview or "")[:4000],
+                rec_time,
+                priority,
+                status,
+                attachment_count,
+            ))
+            cursor.execute("SELECT id FROM emails WHERE message_id = ?;", (message_id,))
+            row = cursor.fetchone()
+            conn.commit()
+            return row["id"] if row else cursor.lastrowid
+
+    def delete_email_by_id(self, email_id: int) -> Optional[str]:
+        """
+        Deletes an email record from the 'emails' audit table and related records, returning its message_id if found.
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT message_id FROM emails WHERE id = ?;", (email_id,))
+            row = cursor.fetchone()
+            if not row:
+                return None
+            msg_id = row["message_id"]
+            cursor.execute("DELETE FROM emails WHERE id = ?;", (email_id,))
+            cursor.execute("DELETE FROM email_logs WHERE message_id = ?;", (msg_id,))
+            cursor.execute("DELETE FROM processing_queue WHERE message_id = ?;", (msg_id,))
+            cursor.execute("DELETE FROM notifications WHERE message_id = ?;", (msg_id,))
+            cursor.execute("DELETE FROM attachments WHERE message_id = ?;", (msg_id,))
+            conn.commit()
+            return msg_id
+
     def record_monitored_stats(self, email_address: str, is_important: bool = False) -> None:
         """
         Increments email detection counters and updates last_checked_at timestamp.
