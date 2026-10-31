@@ -676,6 +676,18 @@ class DatabaseService:
             cursor.execute("DELETE FROM attachments WHERE message_id LIKE 'demo_%';")
             cursor.execute("DELETE FROM processed_files WHERE filename LIKE '%_Nexus_%' OR filename LIKE '%_Apex_%' OR filename LIKE '%_Prime_%';")
             cursor.execute("DELETE FROM rejected_records WHERE source_file LIKE '%_Nexus_%' OR source_file LIKE '%_Apex_%' OR source_file LIKE '%_Prime_%';")
-            cursor.execute("DELETE FROM inventory_items WHERE source_file LIKE '%_Nexus_%' OR source_file LIKE '%_Apex_%' OR source_file LIKE '%_Prime_%';")
+            cursor.execute("""
+                DELETE FROM inventory_items
+                WHERE source_file LIKE '%_Nexus_%'
+                   OR source_file LIKE '%_Apex_%'
+                   OR source_file LIKE '%_Prime_%'
+                   OR vendor_id IN (
+                       SELECT id FROM vendors WHERE email IN (
+                           'vendor.apex@gmail.com',
+                           'orders@primehardware.com',
+                           'sales@nexuslogistics.com'
+                       )
+                   );
+            """)
             conn.commit()
             logger.info("Demo data reset successfully.")

@@ -248,19 +248,24 @@ def run_pipeline(demo_mode: bool = False, open_dashboard: bool = False) -> RunMe
     else:
         # Check if credentials exist for production Gmail API
         if not GMAIL_CREDENTIALS_PATH.exists():
-            logger.warning(
-                "Gmail credentials file not found at '%s'. "
-                "Switching to Demo Inbox Provider for safe execution.",
-                GMAIL_CREDENTIALS_PATH,
+            err_msg = (
+                f"Gmail credentials file not found at '{GMAIL_CREDENTIALS_PATH}'. "
+                "Please configure credentials.json or run with Demo Mode."
             )
-            email_service = DemoInboxProvider()
+            logger.warning(err_msg)
+            metrics.errors.append(err_msg)
+            metrics.overall_status = "WARNING"
+            return metrics
         else:
             gmail = GmailService()
             if gmail.authenticate():
                 email_service = gmail
             else:
-                logger.error("Gmail authentication failed. Falling back to Demo Inbox Provider.")
-                email_service = DemoInboxProvider()
+                err_msg = "Gmail authentication failed. Please check credentials or re-authenticate."
+                logger.error(err_msg)
+                metrics.errors.append(err_msg)
+                metrics.overall_status = "FAILED"
+                return metrics
 
     # Step 1: Monitor, Classify & Enqueue Incoming Emails (Modules A, B, C, H)
     email_monitor = EmailMonitor(

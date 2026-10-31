@@ -3047,16 +3047,24 @@ class AutomationRequestHandler(BaseHTTPRequestHandler):
 def _background_monitor_worker() -> None:
     """
     Background worker thread that automatically runs monitoring cycles
-    for all linked monitored accounts while the web portal is running.
+    for real linked monitored accounts while the web portal is running.
+    Does not inject simulated demo data in the background.
     """
     time.sleep(5)  # Wait for server to stabilize
     while auto_monitor_state.is_running:
         try:
-            from main import run_pipeline
-            # Runs pipeline to inspect all active monitored inboxes
-            run_pipeline(demo_mode=False, open_dashboard=False)
-            auto_monitor_state.last_run_time = datetime.now()
-            auto_monitor_state.last_status = "SUCCESS"
+            from config.settings import GMAIL_CREDENTIALS_PATH
+            if not GMAIL_CREDENTIALS_PATH.exists():
+                auto_monitor_state.last_run_time = datetime.now()
+                auto_monitor_state.last_status = "STANDBY"
+                auto_monitor_state.last_summary = "Standby (Awaiting Gmail API credentials)"
+            else:
+                from main import run_pipeline
+                # Runs pipeline to inspect all active monitored inboxes
+                metrics = run_pipeline(demo_mode=False, open_dashboard=False)
+                auto_monitor_state.last_run_time = datetime.now()
+                auto_monitor_state.last_status = metrics.overall_status
+                auto_monitor_state.last_summary = f"Scanned {metrics.emails_inspected} emails"
         except Exception as exc:
             auto_monitor_state.last_status = "ERROR"
             auto_monitor_state.last_summary = str(exc)

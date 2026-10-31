@@ -631,7 +631,7 @@
     <header class="header">
         <div class="header-title">
             <h1>Email Inventory & Anomaly Detection System</h1>
-            <p>Automated vendor ingestion pipeline &bull; Last synchronized: 2026-10-31 20:53:43</p>
+            <p>Automated vendor ingestion pipeline &bull; Last synchronized: 2026-10-31 21:15:45</p>
         </div>
         <div>
             <span class="badge-live">&#9679; LIVE MONITOR</span>
@@ -641,17 +641,17 @@
     <section class="stats-grid">
         <div class="stat-card">
             <span class="stat-label">Total Stock Items</span>
-            <span class="stat-value">25</span>
+            <span class="stat-value">12</span>
             <span class="stat-desc">Distinct inventory products</span>
         </div>
         <div class="stat-card critical">
             <span class="stat-label" style="color: var(--critical);">Critical Shortages</span>
-            <span class="stat-value" style="color: var(--critical);">5</span>
+            <span class="stat-value" style="color: var(--critical);">2</span>
             <span class="stat-desc">Stock &le; 10 units</span>
         </div>
         <div class="stat-card warning">
             <span class="stat-label" style="color: var(--warning);">Price Warnings</span>
-            <span class="stat-value" style="color: var(--warning);">2</span>
+            <span class="stat-value" style="color: var(--warning);">1</span>
             <span class="stat-desc">Unit price &ge; $500.00</span>
         </div>
         <div class="stat-card">
@@ -666,9 +666,9 @@
             <input type="text" id="searchInput" placeholder="Search by SKU, Product Name, Vendor, or Invoice #...">
         </div>
         <div class="filter-buttons">
-            <button class="btn-filter active" onclick="setFilter('all', this)">All (25)</button>
-            <button class="btn-filter" onclick="setFilter('critical', this)">Critical (5)</button>
-            <button class="btn-filter" onclick="setFilter('warning', this)">Warnings (2)</button>
+            <button class="btn-filter active" onclick="setFilter('all', this)">All (12)</button>
+            <button class="btn-filter" onclick="setFilter('critical', this)">Critical (2)</button>
+            <button class="btn-filter" onclick="setFilter('warning', this)">Warnings (1)</button>
             <button class="btn-filter" onclick="setFilter('normal', this)">Healthy</button>
             <button class="view-toggle-btn" id="viewToggleBtn" onclick="toggleViewMode()">📱 Card View</button>
         </div>
@@ -700,319 +700,150 @@
                 <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$129.00</span></td>
                 <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
                 <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Out of Stock (0)</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_205343_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_211544_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
             </tr>
             
 
-            <tr class="table-danger" data-filter="critical">
+            <tr class="table-warning-critical" data-filter="critical">
                 <td data-label="#"><span class="val-text font-bold">2</span></td>
                 <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-APPL-KB</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Apple Magic Keyboard</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">0</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$129.00</span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-LOGI-01</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Logitech MX Master 3S</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">3</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$99.99</span></td>
                 <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Out of Stock (0)</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Low Stock (3)</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_211544_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
             </tr>
             
 
-            <tr class="table-warning-critical" data-filter="critical">
+            <tr class="table-warning" data-filter="warning">
                 <td data-label="#"><span class="val-text font-bold">3</span></td>
                 <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-LOGI-01</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Logitech MX Master 3S</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">3</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$99.99</span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-DELL-4K</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Dell UltraSharp 32 4K</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">15</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$650.00</span></td>
                 <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Low Stock (3)</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_205343_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-warning">WARNING: High Value ($650.00)</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_211544_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
             </tr>
             
 
-            <tr class="table-warning-critical" data-filter="critical">
+            <tr class="" data-filter="normal">
                 <td data-label="#"><span class="val-text font-bold">4</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-LOGI-01</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Logitech MX Master 3S</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">3</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$99.99</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Low Stock (3)</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="table-warning-critical" data-filter="critical">
-                <td data-label="#"><span class="val-text font-bold">5</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">APX-UI-99</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Test Item UI</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">10</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$25.00</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ACT-ROT</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Rotary Actuator Unit</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">25</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$320.00</span></td>
                 <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-critical">CRITICAL: Low Stock (10)</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205059_ManualUpload_sample_ui_test.csv">20261031_205059_ManualUpload_sample_ui_test.csv</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_211544_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
             </tr>
             
 
-            <tr class="table-warning" data-filter="warning">
+            <tr class="" data-filter="normal">
+                <td data-label="#"><span class="val-text font-bold">5</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-CYL-50</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Pneumatic Cylinder 50mm</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">40</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$89.50</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_211544_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
+            </tr>
+            
+
+            <tr class="" data-filter="normal">
                 <td data-label="#"><span class="val-text font-bold">6</span></td>
                 <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-DELL-4K</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Dell UltraSharp 32 4K</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">15</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$650.00</span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ANKR-04</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Anker 100W GaN Charger</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">50</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$49.99</span></td>
                 <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-warning">WARNING: High Value ($650.00)</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_205343_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_211544_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
             </tr>
             
 
-            <tr class="table-warning" data-filter="warning">
+            <tr class="" data-filter="normal">
                 <td data-label="#"><span class="val-text font-bold">7</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-DELL-4K</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Dell UltraSharp 32 4K</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">15</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$650.00</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-warning">WARNING: High Value ($650.00)</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-VALVE-01</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Hydraulic Pressure Valve</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">75</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$145.00</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
+                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_211544_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
             </tr>
             
 
             <tr class="" data-filter="normal">
                 <td data-label="#"><span class="val-text font-bold">8</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ACT-ROT</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Rotary Actuator Unit</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">25</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$320.00</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ROD-100</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Threaded Steel Rod 1m</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">150</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$14.50</span></td>
                 <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
                 <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205342_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_205342_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
             </tr>
             
 
             <tr class="" data-filter="normal">
                 <td data-label="#"><span class="val-text font-bold">9</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ACT-ROT</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Rotary Actuator Unit</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">25</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$320.00</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">nan</span></span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-PIN-HD</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Heavy Duty Anchor Pin</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">300</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$5.75</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
                 <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
             </tr>
             
 
             <tr class="" data-filter="normal">
                 <td data-label="#"><span class="val-text font-bold">10</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-CYL-50</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Pneumatic Cylinder 50mm</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">40</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$89.50</span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-BOLT-10</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Industrial Hex Bolt 10mm</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">500</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$0.85</span></td>
                 <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
                 <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205342_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_205342_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
             </tr>
             
 
             <tr class="" data-filter="normal">
                 <td data-label="#"><span class="val-text font-bold">11</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-CYL-50</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Pneumatic Cylinder 50mm</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">40</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$89.50</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">nan</span></span></td>
+                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
+                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-WASH-10</code></span></td>
+                <td data-label="Product"><span class="val-text font-bold">Titanium Washer 10mm</span></td>
+                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">850</span></td>
+                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$1.25</span></td>
+                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
                 <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
             </tr>
             
 
             <tr class="" data-filter="normal">
                 <td data-label="#"><span class="val-text font-bold">12</span></td>
                 <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ANKR-04</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Anker 100W GaN Charger</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">50</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$49.99</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Apex_Global_Supplies_sample_vendor_invoice.pdf">20261031_205343_Apex_Global_Supplies_sample_vendor_invoice.pdf</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">13</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ANKR-04</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Anker 100W GaN Charger</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">50</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$49.99</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">INV-2026-8801</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">14</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-VALVE-01</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Hydraulic Pressure Valve</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">75</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$145.00</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205342_Prime_Hardware_Corp_mixed_inventory_nexus.csv">20261031_205342_Prime_Hardware_Corp_mixed_inventory_nexus.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">15</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Nexus Logistics</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-VALVE-01</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Hydraulic Pressure Valve</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">75</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$145.00</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">nan</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">16</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ROD-100</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Threaded Steel Rod 1m</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">150</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$14.50</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">17</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-ROD-100</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Threaded Steel Rod 1m</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">150</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$14.50</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">nan</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">18</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-PIN-HD</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Heavy Duty Anchor Pin</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">300</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$5.75</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">19</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-PIN-HD</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Heavy Duty Anchor Pin</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">300</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$5.75</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">nan</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">20</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-BOLT-10</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Industrial Hex Bolt 10mm</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">500</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$0.85</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">21</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-BOLT-10</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Industrial Hex Bolt 10mm</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">500</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$0.85</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">nan</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">22</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-WASH-10</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Titanium Washer 10mm</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">850</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$1.25</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">23</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-WASH-10</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Titanium Washer 10mm</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">850</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$1.25</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">nan</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">24</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
                 <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-NUT-10</code></span></td>
                 <td data-label="Product"><span class="val-text font-bold">Stainless Steel Nut M10</span></td>
                 <td data-label="Quantity" class="text-center"><span class="val-text font-bold">1200</span></td>
                 <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$0.45</span></td>
                 <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">N/A</span></span></td>
                 <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_205343_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
-            </tr>
-            
-
-            <tr class="" data-filter="normal">
-                <td data-label="#"><span class="val-text font-bold">25</span></td>
-                <td data-label="Vendor"><span class="val-text"><span class="vendor-tag">Apex Global Supplies</span></span></td>
-                <td data-label="SKU"><span class="val-text"><code class="sku-code">SKU-NUT-10</code></span></td>
-                <td data-label="Product"><span class="val-text font-bold">Stainless Steel Nut M10</span></td>
-                <td data-label="Quantity" class="text-center"><span class="val-text font-bold">1200</span></td>
-                <td data-label="Unit Price" class="text-right"><span class="val-text font-mono">$0.45</span></td>
-                <td data-label="Invoice"><span class="val-text"><span class="invoice-tag">nan</span></span></td>
-                <td data-label="Alert Status"><span class="val-text"><span class="badge badge-success">OK / In Stock</span></span></td>
-                <td data-label="Source"><span class="val-text"><span class="source-file" title="Diksha_Gupta_inventory_export.csv">Diksha_Gupta_inventory_export.csv</span></span></td>
+                <td data-label="Source"><span class="val-text"><span class="source-file" title="20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv">20261031_211544_Prime_Hardware_Corp_valid_inventory_apex.csv</span></span></td>
             </tr>
             
             </tbody>
