@@ -599,15 +599,189 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
 
         /* Responsive Mobile Layout */
         @media (max-width: 768px) {
-            body { padding: 12px; }
-            .navbar { flex-direction: column; align-items: flex-start; }
-            .nav-actions { width: 100%; justify-content: flex-start; }
-            .stats-ribbon { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .stat-value { font-size: 20px; }
-            .toolbar { flex-direction: column; align-items: stretch; }
-            .search-box { width: 100%; }
+            body {
+                padding: 14px 12px 60px 12px;
+            }
+            .navbar {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 16px;
+                padding-bottom: 16px;
+                margin-bottom: 18px;
+            }
+            .brand {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 8px;
+                width: 100%;
+            }
+            .brand-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 26px;
+            }
+            .brand-text h1 {
+                font-size: 19px;
+                line-height: 1.3;
+                text-align: center;
+            }
+            .brand-text p {
+                font-size: 12px;
+                text-align: center;
+                max-width: 320px;
+                margin: 0 auto;
+            }
+
+            /* Clean, symmetrical 2-column centered mobile button grid */
+            .nav-actions {
+                width: 100%;
+                max-width: 440px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                justify-content: center;
+            }
+            .nav-actions .monitor-pill {
+                grid-column: 1 / -1;
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            .nav-actions .btn {
+                width: 100%;
+                min-height: 42px;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 9px 8px;
+                font-size: 12px;
+                white-space: normal;
+                line-height: 1.25;
+            }
+            #btnResetDemo {
+                grid-column: 1 / -1;
+                width: 100%;
+            }
+
+            /* Symmetrical Stat Cards with 5th Card as Hero */
+            .stats-ribbon {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                width: 100%;
+                max-width: 480px;
+                margin: 0 auto 20px auto;
+            }
+            .stat-card {
+                padding: 14px 10px;
+                align-items: center;
+                text-align: center;
+                justify-content: center;
+            }
+            .stat-label {
+                text-align: center;
+            }
+            .stat-value {
+                font-size: 22px;
+                text-align: center;
+            }
+            .stat-desc {
+                font-size: 11px;
+                text-align: center;
+            }
+            .stats-ribbon .stat-card:last-child {
+                grid-column: 1 / -1;
+                padding: 16px 14px;
+                background: linear-gradient(135deg, var(--surface) 40%, rgba(59, 130, 246, 0.15) 100%);
+                border-color: rgba(59, 130, 246, 0.35);
+            }
+
+            /* Smooth Mobile Swipe Tabs */
+            .tabs {
+                display: flex;
+                gap: 6px;
+                overflow-x: auto;
+                padding: 4px 2px 10px 2px;
+                margin-bottom: 16px;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+                border-bottom: 1px solid var(--border);
+            }
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+            .tab-btn {
+                padding: 9px 14px;
+                font-size: 12px;
+                border-radius: 20px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            .tab-btn.active {
+                background: var(--accent);
+                color: #fff;
+                border-color: var(--accent);
+                box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+            }
+
+            /* Mobile Toolbar and Search */
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 12px;
+            }
+            .search-box {
+                width: 100%;
+                min-width: 0;
+            }
+            .search-box input {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+            .filters {
+                display: flex;
+                gap: 6px;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 4px;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+            }
+            .filters::-webkit-scrollbar {
+                display: none;
+            }
+            .filter-btn {
+                flex-shrink: 0;
+                white-space: nowrap;
+                padding: 7px 12px;
+                font-size: 11px;
+            }
+
+            /* Mobile Account Grid */
+            .accounts-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .account-card {
+                padding: 14px;
+            }
+            .account-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
 
             /* Table to Card conversion */
+            .table-responsive {
+                background: transparent;
+                border: none;
+            }
             .table-responsive table,
             .table-responsive thead,
             .table-responsive tbody,
@@ -620,17 +794,19 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             .table-responsive tr {
                 background: var(--surface);
                 border: 1px solid var(--border);
-                border-radius: 10px;
-                padding: 10px 12px;
-                margin-bottom: 10px;
+                border-radius: 12px;
+                padding: 12px 14px;
+                margin-bottom: 12px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             }
             .table-responsive td {
                 display: flex;
                 justify-content: space-between;
-                align-items: flex-start;
-                padding: 5px 0;
+                align-items: center;
+                padding: 7px 0;
                 border: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                font-size: 12.5px;
             }
             .table-responsive td:last-child { border-bottom: none; }
             .table-responsive td::before {
@@ -640,8 +816,32 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 color: var(--text-secondary);
                 text-transform: uppercase;
                 margin-right: 10px;
+                flex-shrink: 0;
             }
-            .table-responsive .source-name { max-width: 100%; white-space: normal; word-break: break-all; }
+            .table-responsive .source-name { max-width: 180px; text-align: right; }
+
+            /* Touch-Friendly Modals and Toast */
+            .modal {
+                padding: 20px 16px;
+                margin: 12px;
+                max-width: calc(100vw - 24px);
+            }
+            .modal-actions {
+                flex-direction: column-reverse;
+                gap: 8px;
+            }
+            .modal-actions .btn {
+                width: 100%;
+                justify-content: center;
+                min-height: 42px;
+            }
+            .toast {
+                left: 14px;
+                right: 14px;
+                bottom: 14px;
+                justify-content: center;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -661,19 +861,19 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 <span class="pulse-dot"></span>
                 <span id="monitorStatusText">Auto-Monitor: Active</span>
             </div>
-            <button class="btn btn-outline" id="btnTestAlert" onclick="testDesktopAlert()">
-                🔔 Test Desktop Alert
+            <button class="btn btn-primary" id="btnRunLive" onclick="triggerPipeline(false)">
+                🚀 Scan Inboxes Now
             </button>
             <button class="btn btn-demo" id="btnRunDemo" onclick="triggerPipeline(true)">
                 🧪 Run Demo Scan
             </button>
-            <button class="btn btn-primary" id="btnRunLive" onclick="triggerPipeline(false)">
-                🚀 Scan Inboxes Now
-            </button>
             <button class="btn btn-outline" onclick="openLinkModal()">
                 ➕ Link Email
             </button>
-            <button class="btn btn-danger" onclick="confirmResetDemo()">
+            <button class="btn btn-outline" id="btnTestAlert" onclick="testDesktopAlert()">
+                🔔 Test Desktop Alert
+            </button>
+            <button class="btn btn-danger" id="btnResetDemo" onclick="confirmResetDemo()">
                 🔄 Reset Demo
             </button>
         </div>
