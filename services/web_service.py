@@ -1845,9 +1845,10 @@ def _background_monitor_worker() -> None:
             time.sleep(1)
 
 
-def start_web_server(port: int = 8080, open_browser: bool = True, host: str = "127.0.0.1") -> None:
+def start_web_server(port: int = 8080, open_browser: bool = True, host: str = "0.0.0.0") -> None:
     """
     Starts the threaded web application server and optionally launches browser.
+    Listens on 0.0.0.0 to support local machine, office LAN, and Docker deployment.
     """
     # Seed default monitored accounts if empty
     db = DatabaseService(DATABASE_PATH)
@@ -1866,7 +1867,8 @@ def start_web_server(port: int = 8080, open_browser: bool = True, host: str = "1
         print(f"[ERROR] Could not start server on {host}:{port}")
         return
 
-    url = f"http://{host}:{port}"
+    display_host = "127.0.0.1" if host in ("0.0.0.0", "") else host
+    url = f"http://{display_host}:{port}"
     print("\n" + "=" * 72)
     print("      SMART VENDOR EMAIL & INVENTORY - MULTI-ACCOUNT WEB PORTAL")
     print("=" * 72)

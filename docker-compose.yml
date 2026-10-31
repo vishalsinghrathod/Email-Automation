@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  vendor-automation:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-vendor-automation
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      # Persistent host storage for SQLite database & attachments
+      - ./data:/app/data
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      # Optional: Mount Gmail API credentials if using real Gmail
+      - ./credentials.json:/app/credentials.json:ro
+      - ./token.json:/app/token.json
+    environment:
+      - APP_ENV=production
+      - GMAIL_BATCH_SIZE=20
+      - LOW_STOCK_ALERT_THRESHOLD=10
+      - PRICE_SPIKE_ALERT_THRESHOLD=500.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+

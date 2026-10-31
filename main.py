@@ -5,6 +5,7 @@ Vendor Inventory Email Automation System
 
 import argparse
 import logging
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -92,8 +93,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--port",
         type=int,
-        default=8080,
-        help="Port to run the Employee Web Portal on (default: 8080)",
+        default=int(os.environ.get("PORT", 8080)),
+        help="Port to run the Employee Web Portal on (default: 8080 or $PORT)",
     )
     parser.add_argument(
         "--no-browser",
