@@ -844,6 +844,95 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             transform: translateY(-1px);
         }
 
+        /* Email Inspector Modal Dedicated Styles */
+        .modal-email-inspector {
+            max-width: 680px !important;
+            width: 95% !important;
+            max-height: 90vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            border-radius: 16px !important;
+            background: #0d1322 !important;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8) !important;
+        }
+        .modal-email-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .modal-email-content {
+            padding: 20px 24px;
+            overflow-y: auto;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+        }
+        .modal-email-footer {
+            padding: 14px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .email-body-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .email-body-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            min-width: 0;
+        }
+        .btn-copy-text {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 7px;
+            cursor: pointer;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            line-height: 1.2;
+            transition: all 0.2s ease;
+        }
+        .btn-copy-text:hover {
+            background: rgba(56, 189, 248, 0.28);
+            border-color: #38bdf8;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+        }
+        .btn-copy-text:active {
+            transform: scale(0.96);
+        }
+
         .tag-vendor {
             background: #1e293b;
             border: 1px solid var(--border);
@@ -1465,6 +1554,46 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 justify-content: center !important;
                 min-height: 44px !important;
             }
+            .modal-email-inspector {
+                width: 96% !important;
+                max-height: 94vh !important;
+                padding: 0 !important;
+                margin: 0 auto !important;
+            }
+            .modal-email-header {
+                padding: 14px 14px !important;
+            }
+            .modal-email-content {
+                padding: 14px 12px !important;
+            }
+            .modal-email-footer {
+                padding: 12px 14px !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            .modal-email-footer > div {
+                width: 100% !important;
+                display: flex !important;
+                gap: 8px !important;
+            }
+            .modal-email-footer .btn {
+                flex: 1 !important;
+                justify-content: center !important;
+            }
+            .email-body-header {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                gap: 6px !important;
+            }
+            .email-body-title {
+                font-size: 11px !important;
+            }
+            .btn-copy-text {
+                padding: 5px 10px !important;
+                font-size: 11px !important;
+                flex-shrink: 0 !important;
+            }
             .toast {
                 left: 10px !important;
                 right: 10px !important;
@@ -1866,55 +1995,58 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- MODAL: EMAIL CONTENT INSPECTOR -->
     <div class="modal-overlay" id="emailModal" onclick="if(event.target===this) closeEmailModal()">
-        <div class="modal" style="max-width: 680px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.18);">
+        <div class="modal modal-email-inspector">
             <!-- Modal Header -->
-            <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: flex-start; gap: 14px;">
+            <div class="modal-email-header">
                 <div style="min-width: 0; flex: 1;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
                         <span style="font-size: 18px;">✉️</span>
                         <span id="modalEmailPriority" class="badge badge-normal">Normal</span>
                         <span id="modalEmailStatus" class="badge badge-success">PROCESSED</span>
                     </div>
-                    <h3 id="modalEmailSubject" style="margin: 0; font-size: 17px; font-weight: 700; color: #fff; word-break: break-word; line-height: 1.4;">Email Subject</h3>
+                    <h3 id="modalEmailSubject" style="margin: 0; font-size: 16px; font-weight: 700; color: #fff; word-break: break-word; line-height: 1.4;">Email Subject</h3>
                 </div>
                 <button type="button" onclick="closeEmailModal()" style="background: none; border: none; color: var(--text-secondary); font-size: 26px; cursor: pointer; padding: 0 4px; line-height: 1; margin-top: -4px;">&times;</button>
             </div>
 
             <!-- Modal Scrollable Content -->
-            <div style="padding: 24px; overflow-y: auto; flex: 1;">
+            <div class="modal-email-content">
                 <!-- Sender Info Metadata Grid -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
                     <div>
-                        <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">From / Sender</div>
-                        <div id="modalEmailSender" style="font-size: 13px; font-weight: 600; color: #fff; word-break: break-word;">-</div>
+                        <div style="font-size: 10.5px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">From / Sender</div>
+                        <div id="modalEmailSender" style="font-size: 12.5px; font-weight: 600; color: #fff; word-break: break-word;">-</div>
                     </div>
                     <div>
-                        <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">Received Time</div>
-                        <div id="modalEmailReceived" style="font-size: 13px; color: var(--text-secondary);">-</div>
+                        <div style="font-size: 10.5px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">Received Time</div>
+                        <div id="modalEmailReceived" style="font-size: 12.5px; color: var(--text-secondary);">-</div>
                     </div>
                     <div>
-                        <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">Attachments</div>
-                        <div id="modalEmailFiles" style="font-size: 13px; font-weight: 700; color: #38bdf8;">-</div>
+                        <div style="font-size: 10.5px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px;">Attachments</div>
+                        <div id="modalEmailFiles" style="font-size: 12.5px; font-weight: 700; color: #38bdf8;">-</div>
                     </div>
                 </div>
 
                 <!-- Email Message Body Box -->
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">
-                            📝 Email Content & Vendor Note (What was sent in the email)
-                        </span>
-                        <button type="button" onclick="copyModalEmailBody()" class="btn btn-sm btn-outline" style="padding: 4px 10px; font-size: 11px; cursor: pointer;">📋 Copy Text</button>
+                <div style="margin-bottom: 16px;">
+                    <div class="email-body-header">
+                        <div class="email-body-title">
+                            <span>📝</span>
+                            <span>Email Content</span>
+                        </div>
+                        <button type="button" id="btnCopyModalBody" onclick="copyModalEmailBody()" class="btn-copy-text" title="Copy email text">
+                            📋 Copy Text
+                        </button>
                     </div>
-                    <div id="modalEmailBody" style="white-space: pre-wrap; word-break: break-word; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; line-height: 1.6; color: #e2e8f0; background: rgba(0,0,0,0.3); padding: 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); max-height: 320px; overflow-y: auto;">
+                    <div id="modalEmailBody" style="white-space: pre-wrap; word-break: break-word; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; line-height: 1.6; color: #e2e8f0; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); max-height: 280px; overflow-y: auto;">
                         (No message text body)
                     </div>
                 </div>
 
                 <!-- Ingestion Notice -->
-                <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 12px;">
-                    <div style="font-size: 24px;">📦</div>
-                    <div style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">
+                <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px;">
+                    <div style="font-size: 22px; flex-shrink: 0;">📦</div>
+                    <div style="font-size: 11.5px; color: #cbd5e1; line-height: 1.5;">
                         <strong style="color: #34d399;">Automated Ingestion Pipeline:</strong>
                         Product inventory records from this email are parsed, validated, and synced into your database and stock table.
                     </div>
@@ -1922,7 +2054,7 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             </div>
 
             <!-- Modal Footer -->
-            <div style="padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div class="modal-email-footer">
                 <div>
                     <button type="button" class="btn btn-danger" onclick="confirmDeleteCurrentEmail()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 12px; background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.45); color: #f87171;">
                         🗑️ Delete Email Record
@@ -2413,9 +2545,28 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
         }
 
         function copyModalEmailBody() {
-            const text = document.getElementById('modalEmailBody').textContent;
+            const bodyEl = document.getElementById('modalEmailBody');
+            const text = bodyEl ? bodyEl.innerText : '';
+            const btn = document.getElementById('btnCopyModalBody');
+            if (!text || text === '(No message text body)') {
+                showToast("No email text to copy", "info");
+                return;
+            }
             navigator.clipboard.writeText(text).then(() => {
                 showToast("Email content copied to clipboard!", "success");
+                if (btn) {
+                    const orig = btn.innerHTML;
+                    btn.innerHTML = '✅ Copied!';
+                    btn.style.borderColor = '#34d399';
+                    btn.style.color = '#34d399';
+                    btn.style.background = 'rgba(52, 211, 153, 0.18)';
+                    setTimeout(() => {
+                        btn.innerHTML = orig;
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                        btn.style.background = '';
+                    }, 2000);
+                }
             }).catch(() => {
                 showToast("Could not copy text", "error");
             });
