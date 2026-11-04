@@ -76,6 +76,25 @@ class GmailService:
 
         creds = None
 
+        # Cloud/Render environment variable support for headless OAuth
+        env_token = os.getenv("GMAIL_TOKEN_JSON")
+        if env_token and not self.token_path.exists():
+            try:
+                self.token_path.parent.mkdir(parents=True, exist_ok=True)
+                self.token_path.write_text(env_token.strip(), encoding="utf-8")
+                logger.info("Restored token.json from GMAIL_TOKEN_JSON environment variable.")
+            except Exception as exc:
+                logger.warning("Could not write GMAIL_TOKEN_JSON to file: %s", exc)
+
+        env_creds = os.getenv("GMAIL_CREDENTIALS_JSON")
+        if env_creds and not self.credentials_path.exists():
+            try:
+                self.credentials_path.parent.mkdir(parents=True, exist_ok=True)
+                self.credentials_path.write_text(env_creds.strip(), encoding="utf-8")
+                logger.info("Restored credentials.json from GMAIL_CREDENTIALS_JSON environment variable.")
+            except Exception as exc:
+                logger.warning("Could not write GMAIL_CREDENTIALS_JSON to file: %s", exc)
+
         # Check existing token
         if self.token_path.exists():
             try:
