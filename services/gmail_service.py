@@ -5,6 +5,7 @@ attachment downloads via Gmail API, label updates, error retries,
 and provides a separate Demo Inbox Provider for offline verification.
 """
 
+import os
 import base64
 import email.utils
 import logging
