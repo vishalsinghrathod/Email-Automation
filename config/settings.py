@@ -43,6 +43,23 @@ for directory in [DOWNLOADS_DIR, PROCESSED_DIR, REJECTED_DIR, SAMPLES_DIR, LOGS_
 GMAIL_CREDENTIALS_PATH: Path = Path(os.getenv("GMAIL_CREDENTIALS_PATH", BASE_DIR / "credentials.json"))
 GMAIL_TOKEN_PATH: Path = Path(os.getenv("GMAIL_TOKEN_PATH", BASE_DIR / "token.json"))
 
+# Auto-restore OAuth credentials from environment variables if present (for cloud deployments like Render)
+_env_creds = os.getenv("GMAIL_CREDENTIALS_JSON")
+if _env_creds and not GMAIL_CREDENTIALS_PATH.exists():
+    try:
+        GMAIL_CREDENTIALS_PATH.parent.mkdir(parents=True, exist_ok=True)
+        GMAIL_CREDENTIALS_PATH.write_text(_env_creds.strip(), encoding="utf-8")
+    except Exception:
+        pass
+
+_env_token = os.getenv("GMAIL_TOKEN_JSON")
+if _env_token and not GMAIL_TOKEN_PATH.exists():
+    try:
+        GMAIL_TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
+        GMAIL_TOKEN_PATH.write_text(_env_token.strip(), encoding="utf-8")
+    except Exception:
+        pass
+
 # Minimum required scopes for reading emails and updating read/label status
 GMAIL_SCOPES: List[str] = [
     "https://www.googleapis.com/auth/gmail.readonly",
