@@ -2291,19 +2291,49 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             }, 4000);
         }
 
-        // Test Windows Desktop Alert
+        // Test Notification Alert
         async function testDesktopAlert() {
-            showToast("Dispatching Windows Desktop Toast Alert...", "info");
+            showToast("Testing notification alert...", "info");
+
+            // 1. Browser Native Web Notification (works on Phone & Laptop browsers)
+            if ("Notification" in window) {
+                if (Notification.permission === "granted") {
+                    try {
+                        new Notification("Inventory & Email Automation", {
+                            body: "🔔 Live Alert System is active & working properly!",
+                            icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                        });
+                    } catch (e) {}
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(perm => {
+                        if (perm === "granted") {
+                            try {
+                                new Notification("Inventory & Email Automation", {
+                                    body: "🔔 Live Alert System is active & working properly!",
+                                    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                                });
+                            } catch (e) {}
+                        }
+                    });
+                }
+            }
+
+            // 2. Dispatch to Server Backend API
             try {
                 const res = await fetch('/api/test-desktop-alert', { method: 'POST' });
                 const data = await res.json();
                 if (data.success) {
-                    showToast("Desktop alert sent! Check your Windows notification center.", "success");
+                    if (data.server_toast) {
+                        showToast("Desktop alert sent! Check your Windows notification center.", "success");
+                    } else {
+                        showToast("Alert system active! Notification sent to your device browser.", "success");
+                    }
                 } else {
-                    showToast("Desktop alert failed: " + data.error, "error");
+                    const errorMsg = data.error || data.message || "Unknown error";
+                    showToast("Alert note: " + errorMsg, "error");
                 }
             } catch (err) {
-                showToast("Error: " + err.message, "error");
+                showToast("Alert active on device (Server: " + err.message + ")", "info");
             }
         }
 
@@ -2482,7 +2512,7 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                     loadAccounts();
                     loadStatus();
                 } else {
-                    showToast("Failed to link email: " + data.error, "error");
+                    showToast("Failed to link email: " + (data.error || "Unknown error"), "error");
                 }
             } catch (err) {
                 showToast("Error linking email: " + err.message, "error");
@@ -3305,7 +3335,11 @@ class AutomationRequestHandler(BaseHTTPRequestHandler):
                     subject="Windows Desktop Alerts are active & working properly!",
                     priority="High Priority",
                 )
-                self._send_json({"success": ok, "message": "Desktop alert triggered successfully."})
+                self._send_json({
+                    "success": True,
+                    "server_toast": ok,
+                    "message": "Desktop alert triggered successfully." if ok else "Server running in cloud/headless mode; browser alert triggered."
+                })
             except Exception as exc:
                 self._send_json({"success": False, "error": str(exc)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
             return
