@@ -915,6 +915,58 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             transform: translateY(-1px);
         }
 
+        .btn-gmail-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 12px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #f87171;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap !important;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-gmail-action:hover {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: #ef4444;
+            color: #fff;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .auto-open-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: #cbd5e1;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+        .auto-open-switch:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            background: rgba(56, 189, 248, 0.08);
+            color: #fff;
+        }
+        .auto-open-switch input[type="checkbox"] {
+            accent-color: #38bdf8;
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+            margin: 0;
+        }
+
         .action-btn-group {
             display: inline-flex;
             align-items: center;
@@ -1628,8 +1680,8 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             .table-responsive td[data-label="Action"] .btn-view-content {
                 flex: 1 !important;
                 width: auto !important;
-                padding: 10px 14px !important;
-                font-size: 13px !important;
+                padding: 10px 10px !important;
+                font-size: 12.5px !important;
                 font-weight: 700 !important;
                 letter-spacing: 0.3px !important;
                 border-radius: 10px !important;
@@ -1637,6 +1689,17 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 border: 1px solid rgba(56, 189, 248, 0.5) !important;
                 color: #fff !important;
                 box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2) !important;
+            }
+            .table-responsive td[data-label="Action"] .btn-gmail-action {
+                flex: 1 !important;
+                width: auto !important;
+                padding: 10px 10px !important;
+                font-size: 12.5px !important;
+                font-weight: 700 !important;
+                border-radius: 10px !important;
+                background: rgba(239, 68, 68, 0.18) !important;
+                border: 1px solid rgba(239, 68, 68, 0.45) !important;
+                color: #fca5a5 !important;
             }
             .table-responsive td[data-label="Action"] .btn-delete-row {
                 flex-shrink: 0 !important;
@@ -1843,6 +1906,9 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 <button class="btn btn-primary" id="btnRunLive" onclick="triggerPipeline(false)">
                     🚀 Scan Inboxes
                 </button>
+                <button class="btn btn-outline" id="btnOpenGmailHeader" onclick="openGmailInbox()" title="Open Gmail Inbox directly in a new tab" style="border-color: rgba(239, 68, 68, 0.45); color: #fca5a5;">
+                    ✉️ Open Gmail ↗
+                </button>
                 <button class="btn btn-demo" id="btnRunDemo" onclick="triggerPipeline(true)">
                     🧪 Run Demo
                 </button>
@@ -1944,7 +2010,7 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- TAB 2: LIVE EMAIL FEED -->
     <div class="tab-pane" id="paneEmails">
-        <div class="toolbar">
+        <div class="toolbar" style="flex-wrap: wrap; gap: 10px;">
             <div class="search-box">
                 <input type="text" id="emailSearch" placeholder="Search emails by sender, subject, or keyword..." onkeyup="filterEmailsTable()">
             </div>
@@ -1952,6 +2018,15 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 <button class="filter-btn active" onclick="filterEmails('all', this)">All Emails</button>
                 <button class="filter-btn" onclick="filterEmails('high', this)">🚨 High Priority / Actionable</button>
                 <button class="filter-btn" onclick="filterEmails('normal', this)">Normal</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap;">
+                <label class="auto-open-switch" title="When enabled, detecting a new email will directly launch Gmail inbox in a new tab">
+                    <input type="checkbox" id="chkAutoOpenGmail" onchange="toggleAutoOpenGmail(this)" checked>
+                    <span>Auto-open Gmail on Detection</span>
+                </label>
+                <button class="btn btn-outline" onclick="openGmailInbox()" style="padding: 6px 12px; font-size: 12px; border-color: rgba(239, 68, 68, 0.45); color: #fca5a5; display: inline-flex; align-items: center; gap: 5px;">
+                    ✉️ Open Gmail Inbox ↗
+                </button>
             </div>
         </div>
 
@@ -2206,9 +2281,12 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
 
             <!-- Modal Footer -->
             <div class="modal-email-footer">
-                <div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button type="button" class="btn btn-danger" onclick="confirmDeleteCurrentEmail()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 12px; background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.45); color: #f87171;">
                         🗑️ Delete Email Record
+                    </button>
+                    <button type="button" class="btn btn-outline" id="btnModalOpenInGmail" onclick="openCurrentEmailInGmail()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 12px; border-color: rgba(239, 68, 68, 0.45); color: #fca5a5; background: rgba(239, 68, 68, 0.1);">
+                        ✉️ Open in Gmail Inbox ↗
                     </button>
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -2338,6 +2416,9 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             }
         }
 
+        let previousImportantEmailsCount = null;
+        let previousProcessedCount = null;
+
         // Load Status & Metrics
         async function loadStatus() {
             try {
@@ -2348,6 +2429,19 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 document.getElementById('statImportantEmails').innerText = (data.important_emails_count || 0).toLocaleString();
                 document.getElementById('statCriticalAlerts').innerText = (data.critical_alerts_count || 0).toLocaleString();
                 document.getElementById('statWarningAlerts').innerText = (data.warning_alerts_count || 0).toLocaleString();
+
+                // Check if background monitor detected new emails
+                if (previousImportantEmailsCount !== null && (data.important_emails_count > previousImportantEmailsCount || data.emails_processed_successfully > previousProcessedCount)) {
+                    if (isAutoOpenGmailEnabled()) {
+                        showToast("📧 New vendor email detected! Launching Gmail Inbox...", "success");
+                        window.open("https://mail.google.com/mail/u/0/#inbox", "_blank");
+                    }
+                    if (document.getElementById('paneEmails') && document.getElementById('paneEmails').classList.contains('active')) {
+                        loadEmails();
+                    }
+                }
+                previousImportantEmailsCount = data.important_emails_count || 0;
+                previousProcessedCount = data.emails_processed_successfully || 0;
 
                 // Dynamic calculation for the Real-Time Health Breakdown Ribbon
                 const total = data.total_units_in_stock || 0;
@@ -2618,7 +2712,8 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                     <td data-label="Received" style="font-size: 11px; color: var(--text-secondary);">${em.received_at || ''}</td>
                     <td data-label="Action" style="text-align: center;">
                         <div class="action-btn-group">
-                            <button type="button" class="btn-view-content" onclick="openEmailModal(${em.id})">👁️ View Content</button>
+                            <button type="button" class="btn-view-content" onclick="openEmailModal(${em.id})">👁️ View</button>
+                            <button type="button" class="btn-gmail-action" onclick="openEmailInGmail('${escapeHtml(em.subject || '')}', '${escapeHtml(em.message_id || '')}', event)" title="Open this email in Gmail">✉️ Gmail</button>
                             <button type="button" class="btn-delete-row" onclick="promptDeleteEmail(${em.id}, event)" title="Delete email record">🗑️</button>
                         </div>
                     </td>
@@ -2668,6 +2763,48 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             currentModalEmailId = null;
             const modal = document.getElementById('emailModal');
             if (modal) modal.classList.remove('active');
+        }
+
+        function isAutoOpenGmailEnabled() {
+            const saved = localStorage.getItem('auto_open_gmail_enabled');
+            return saved === null ? true : saved === 'true';
+        }
+
+        function toggleAutoOpenGmail(checkbox) {
+            localStorage.setItem('auto_open_gmail_enabled', checkbox.checked ? 'true' : 'false');
+            if (checkbox.checked) {
+                showToast("Auto-open Gmail enabled: Newly detected emails will launch Gmail Inbox.", "info");
+            } else {
+                showToast("Auto-open Gmail disabled.", "info");
+            }
+        }
+
+        function openGmailInbox() {
+            window.open("https://mail.google.com/mail/u/0/#inbox", "_blank");
+        }
+
+        function openEmailInGmail(subject, messageId, event) {
+            if (event) event.stopPropagation();
+            let url = "https://mail.google.com/mail/u/0/#inbox";
+            if (subject && !subject.startsWith("demo_") && subject !== "(No Subject)") {
+                url = "https://mail.google.com/mail/u/0/#search/" + encodeURIComponent(subject.trim());
+            } else if (messageId && !messageId.startsWith("demo_")) {
+                url = "https://mail.google.com/mail/u/0/#all/" + encodeURIComponent(messageId.trim());
+            }
+            window.open(url, "_blank");
+        }
+
+        function openCurrentEmailInGmail() {
+            if (!currentModalEmailId) {
+                openGmailInbox();
+                return;
+            }
+            const em = emailsData.find(e => e.id === currentModalEmailId);
+            if (em) {
+                openEmailInGmail(em.subject, em.message_id);
+            } else {
+                openGmailInbox();
+            }
         }
 
         function confirmDeleteCurrentEmail() {
@@ -2953,6 +3090,15 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
 
                 if (data.success) {
                     showToast(`Scan complete! ${data.valid_records} items ingested (${data.rejected_records} rejected). Desktop alert triggered for important updates.`, 'success');
+
+                    // If email detected during scan, auto-open Gmail Inbox
+                    if (data.emails_inspected > 0 && !demoMode && isAutoOpenGmailEnabled()) {
+                        showToast("📧 New email detected! Launching Gmail Inbox...", "success");
+                        setTimeout(() => {
+                            window.open("https://mail.google.com/mail/u/0/#inbox", "_blank");
+                        }, 500);
+                    }
+
                     loadStatus();
                     loadAccounts();
                     loadEmails();
@@ -3081,6 +3227,8 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             loadStatus();
             loadAccounts();
             setInterval(loadStatus, 10000);
+            const chk = document.getElementById('chkAutoOpenGmail');
+            if (chk) chk.checked = isAutoOpenGmailEnabled();
         });
     </script>
 </body>

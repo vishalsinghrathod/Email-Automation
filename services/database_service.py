@@ -660,7 +660,7 @@ class DatabaseService:
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT id, message_id, sender_name, sender_email, subject,
+                SELECT id, message_id, thread_id, sender_name, sender_email, subject,
                        body_preview, received_at, priority, status, attachment_count, processed_at
                 FROM emails
                 ORDER BY received_at DESC, id DESC
