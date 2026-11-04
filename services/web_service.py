@@ -49,6 +49,7 @@ class AutoMonitorState:
     last_summary: str = "Ready"
 
 auto_monitor_state = AutoMonitorState()
+pipeline_lock = threading.Lock()
 
 
 # ==============================================================================
@@ -3346,6 +3347,13 @@ class AutomationRequestHandler(BaseHTTPRequestHandler):
 
         if path == "/api/run-pipeline":
             demo_mode = payload.get("demo_mode", False)
+            if not pipeline_lock.acquire(timeout=45.0):
+                self._send_json({
+                    "success": False,
+                    "error": "A scan is already in progress. Please wait a few seconds and try again."
+                }, status=HTTPStatus.CONFLICT)
+                return
+
             try:
                 from main import run_pipeline
                 metrics = run_pipeline(demo_mode=demo_mode, open_dashboard=False)
@@ -3361,20 +3369,23 @@ class AutomationRequestHandler(BaseHTTPRequestHandler):
             except Exception as exc:
                 logger.exception("Error executing pipeline via Web API: %s", exc)
                 self._send_json({"success": False, "error": str(exc)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+            finally:
+                pipeline_lock.release()
             return
 
         if path == "/api/reset-demo":
             clear_all = bool(payload.get("clear_all", False))
-            try:
-                if clear_all:
-                    db.clear_all_data()
-                    msg = "All email feed records and inventory items wiped clean."
-                else:
-                    db.reset_demo_data()
-                    msg = "Demo data successfully reset."
-                self._send_json({"success": True, "message": msg})
-            except Exception as exc:
-                self._send_json({"success": False, "error": str(exc)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+            with pipeline_lock:
+                try:
+                    if clear_all:
+                        db.clear_all_data()
+                        msg = "All email feed records and inventory items wiped clean."
+                    else:
+                        db.reset_demo_data()
+                        msg = "Demo data successfully reset."
+                    self._send_json({"success": True, "message": msg})
+                except Exception as exc:
+                    self._send_json({"success": False, "error": str(exc)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
             return
 
         if path == "/api/upload":
@@ -3444,12 +3455,18 @@ def _background_monitor_worker() -> None:
                 auto_monitor_state.last_status = "STANDBY"
                 auto_monitor_state.last_summary = "Standby (Awaiting Gmail API credentials)"
             else:
-                from main import run_pipeline
-                # Runs pipeline to inspect all active monitored inboxes
-                metrics = run_pipeline(demo_mode=False, open_dashboard=False)
-                auto_monitor_state.last_run_time = datetime.now()
-                auto_monitor_state.last_status = metrics.overall_status
-                auto_monitor_state.last_summary = f"Scanned {metrics.emails_inspected} emails"
+                if pipeline_lock.acquire(blocking=False):
+                    try:
+                        from main import run_pipeline
+                        # Runs pipeline to inspect all active monitored inboxes
+                        metrics = run_pipeline(demo_mode=False, open_dashboard=False)
+                        auto_monitor_state.last_run_time = datetime.now()
+                        auto_monitor_state.last_status = metrics.overall_status
+                        auto_monitor_state.last_summary = f"Scanned {metrics.emails_inspected} emails"
+                    finally:
+                        pipeline_lock.release()
+                else:
+                    logger.debug("Pipeline scan in progress by user/API, skipping background monitor pass.")
         except Exception as exc:
             auto_monitor_state.last_status = "ERROR"
             auto_monitor_state.last_summary = str(exc)

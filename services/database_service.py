@@ -36,9 +36,18 @@ class DatabaseService:
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON;")
         try:
+            conn.execute("PRAGMA journal_mode = WAL;")
+            conn.execute("PRAGMA busy_timeout = 30000;")
+            conn.execute("PRAGMA synchronous = NORMAL;")
+        except Exception:
+            pass
+        try:
             yield conn
         finally:
-            conn.close()
+            try:
+                conn.close()
+            except Exception:
+                pass
 
     def _init_schema(self) -> None:
         """
@@ -227,9 +236,21 @@ class DatabaseService:
             cursor = conn.cursor()
             for record in records:
                 try:
-                    # Resolve vendor_id
-                    vendor_name = record["vendor_name"]
-                    vendor_id = self.get_or_create_vendor(vendor_name)
+                    # Resolve vendor_id using active cursor
+                    vendor_name = str(record["vendor_name"]).strip()
+                    cursor.execute("SELECT id FROM vendors WHERE name = ? COLLATE NOCASE", (vendor_name,))
+                    v_row = cursor.fetchone()
+                    if v_row:
+                        vendor_id = v_row["id"]
+                    else:
+                        gen_email = f"{vendor_name.lower().replace(' ', '.')}@vendor.autogen"
+                        cursor.execute("""
+                            INSERT INTO vendors (name, email, is_active)
+                            VALUES (?, ?, 1)
+                            ON CONFLICT(name) DO UPDATE SET is_active = 1;
+                        """, (vendor_name, gen_email))
+                        cursor.execute("SELECT id FROM vendors WHERE name = ? COLLATE NOCASE", (vendor_name,))
+                        vendor_id = cursor.fetchone()["id"]
 
                     invoice_val = str(record.get("invoice_no") or "").strip() or None
 
