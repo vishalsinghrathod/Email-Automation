@@ -71,7 +71,7 @@ DEFAULT_KEYWORDS = [
     "inventory", "stock", "catalog", "supply", "supplies", "item list",
     "inventory update", "product", "products", "product details", "submission",
     "details", "invoice", "bill", "pricing", "price list", "quotation", "rate", "sku",
-    "vendor details", "order", "items"
+    "vendor details", "order", "items", "test", "demo", "sample", "data", "file"
 ]
 _env_keywords = os.getenv("GMAIL_SEARCH_KEYWORDS")
 GMAIL_SEARCH_KEYWORDS: List[str] = (
