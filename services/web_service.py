@@ -629,8 +629,10 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
         .accounts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 14px;
+            gap: 16px;
             margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
         .account-card {
             background: var(--surface);
@@ -643,29 +645,95 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             position: relative;
             transition: all 0.2s;
             backdrop-filter: blur(12px);
+            overflow: hidden;
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 100%;
         }
         .account-card.active {
             border-left: 4px solid var(--success);
         }
         .account-card.paused {
             border-left: 4px solid #64748b;
-            opacity: 0.75;
+            opacity: 0.78;
         }
         .account-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            gap: 8px;
+            gap: 10px;
+            flex-wrap: wrap;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .account-info {
+            flex: 1 1 170px;
+            min-width: 0;
+            overflow: hidden;
         }
         .account-name {
             font-size: 15px;
             font-weight: 700;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 1.3;
         }
         .account-email {
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
             color: var(--text-secondary);
-            margin-top: 2px;
+            margin-top: 3px;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+            line-height: 1.3;
+        }
+        .account-badge-wrap {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+        .badge-account-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            line-height: 1.2;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .badge-account-status.active {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+        }
+        .badge-account-status.paused {
+            background: rgba(100, 116, 139, 0.2);
+            color: #cbd5e1;
+            border: 1px solid rgba(100, 116, 139, 0.35);
+        }
+        .status-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #34d399;
+            display: inline-block;
+            box-shadow: 0 0 6px #34d399;
+            animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
         }
         .account-stats {
             display: grid;
@@ -674,27 +742,56 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             background: rgba(0, 0, 0, 0.25);
             padding: 10px;
             border-radius: 10px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .account-stat-box {
+            min-width: 0;
+            overflow: hidden;
         }
         .account-stat-num {
             font-size: 18px;
             font-weight: 800;
+            line-height: 1.2;
         }
         .account-stat-lbl {
             font-size: 11px;
             color: var(--text-secondary);
+            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .account-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
             font-size: 11px;
             color: var(--text-secondary);
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             padding-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .account-last-check {
+            flex: 1 1 120px;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .account-actions {
             display: flex;
             gap: 6px;
+            flex-shrink: 0;
+        }
+        .btn-account-action {
+            padding: 4px 10px !important;
+            font-size: 11px !important;
+            min-height: 28px !important;
+            line-height: 1 !important;
         }
 
         /* Email Rows with Highlights */
@@ -1387,19 +1484,33 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 overflow: hidden !important;
             }
             .account-header {
-                flex-direction: column !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
                 align-items: flex-start !important;
                 gap: 8px !important;
+                flex-wrap: wrap !important;
                 width: 100% !important;
             }
-            .account-email {
-                word-break: break-all !important;
-                overflow-wrap: anywhere !important;
+            .account-info {
+                flex: 1 1 150px !important;
+                min-width: 0 !important;
+                overflow: hidden !important;
+            }
+            .account-badge-wrap {
+                margin-top: 2px !important;
+                flex-shrink: 0 !important;
+            }
+            .badge-account-status {
+                padding: 3px 8px !important;
+                font-size: 10px !important;
             }
             .account-footer {
                 flex-direction: column !important;
                 align-items: flex-start !important;
                 gap: 8px !important;
+                width: 100% !important;
+            }
+            .account-last-check {
                 width: 100% !important;
             }
             .account-actions {
@@ -2263,35 +2374,35 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             grid.innerHTML = accountsData.map(acc => {
                 const isActive = acc.is_active === 1;
                 const statusBadge = isActive 
-                    ? `<span class="badge badge-success">&#9679; MONITORING ACTIVE</span>`
-                    : `<span class="badge badge-normal">PAUSED</span>`;
+                    ? `<span class="badge-account-status active"><span class="status-pulse-dot"></span> MONITORING ACTIVE</span>`
+                    : `<span class="badge-account-status paused">⏸ PAUSED</span>`;
 
                 return `
                 <div class="account-card ${isActive ? 'active' : 'paused'}">
                     <div class="account-header">
-                        <div>
-                            <div class="account-name">${escapeHtml(acc.account_name)}</div>
-                            <div class="account-email">${escapeHtml(acc.email_address)}</div>
+                        <div class="account-info">
+                            <div class="account-name" title="${escapeHtml(acc.account_name)}">${escapeHtml(acc.account_name)}</div>
+                            <div class="account-email" title="${escapeHtml(acc.email_address)}">${escapeHtml(acc.email_address)}</div>
                         </div>
-                        <div>${statusBadge}</div>
+                        <div class="account-badge-wrap">${statusBadge}</div>
                     </div>
                     <div class="account-stats">
-                        <div>
+                        <div class="account-stat-box">
                             <div class="account-stat-num">${acc.total_emails_detected || 0}</div>
                             <div class="account-stat-lbl">Emails Inspected</div>
                         </div>
-                        <div>
+                        <div class="account-stat-box">
                             <div class="account-stat-num" style="color: var(--critical);">${acc.important_emails_detected || 0}</div>
                             <div class="account-stat-lbl">🚨 Important Alerts</div>
                         </div>
                     </div>
                     <div class="account-footer">
-                        <span>Last check: ${acc.last_checked_at || 'Pending scan'}</span>
+                        <span class="account-last-check">Last check: ${acc.last_checked_at || 'Pending scan'}</span>
                         <div class="account-actions">
-                            <button class="btn btn-outline" style="padding: 3px 8px; font-size: 11px;" onclick="toggleAccount(${acc.id}, ${!isActive})">
+                            <button class="btn btn-outline btn-account-action" onclick="toggleAccount(${acc.id}, ${!isActive})">
                                 ${isActive ? '⏸️ Pause' : '▶️ Resume'}
                             </button>
-                            <button class="btn btn-danger" style="padding: 3px 8px; font-size: 11px;" onclick="deleteAccount(${acc.id})">
+                            <button class="btn btn-danger btn-account-action" onclick="deleteAccount(${acc.id})">
                                 🗑️ Unlink
                             </button>
                         </div>
