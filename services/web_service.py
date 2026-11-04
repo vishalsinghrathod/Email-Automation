@@ -890,37 +890,46 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 8px;
-            flex-wrap: wrap;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         .email-body-title {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--text-secondary);
             min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
         }
         .btn-copy-text {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
-            padding: 5px 12px;
+            padding: 6px 12px;
             font-size: 11px;
             font-weight: 700;
             color: #38bdf8;
             background: rgba(56, 189, 248, 0.12);
             border: 1px solid rgba(56, 189, 248, 0.35);
-            border-radius: 7px;
+            border-radius: 8px;
             cursor: pointer;
             white-space: nowrap !important;
+            word-break: keep-all !important;
             flex-shrink: 0 !important;
-            line-height: 1.2;
+            line-height: 1;
+            min-height: 30px;
+            box-sizing: border-box;
             transition: all 0.2s ease;
         }
         .btn-copy-text:hover {
@@ -931,6 +940,14 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
         }
         .btn-copy-text:active {
             transform: scale(0.96);
+        }
+        #modalEmailBody {
+            white-space: pre-wrap !important;
+            word-break: break-word !important;
+            overflow-wrap: anywhere !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            max-width: 100% !important;
         }
 
         .tag-vendor {
@@ -1559,40 +1576,62 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 max-height: 94vh !important;
                 padding: 0 !important;
                 margin: 0 auto !important;
+                box-sizing: border-box !important;
+                overflow-x: hidden !important;
             }
             .modal-email-header {
                 padding: 14px 14px !important;
+                box-sizing: border-box !important;
             }
             .modal-email-content {
                 padding: 14px 12px !important;
+                box-sizing: border-box !important;
+                overflow-x: hidden !important;
             }
             .modal-email-footer {
                 padding: 12px 14px !important;
                 flex-direction: column !important;
                 gap: 10px !important;
+                box-sizing: border-box !important;
             }
             .modal-email-footer > div {
                 width: 100% !important;
                 display: flex !important;
                 gap: 8px !important;
+                box-sizing: border-box !important;
             }
             .modal-email-footer .btn {
                 flex: 1 !important;
                 justify-content: center !important;
             }
             .email-body-header {
+                display: flex !important;
                 flex-direction: row !important;
                 justify-content: space-between !important;
                 align-items: center !important;
-                gap: 6px !important;
+                gap: 8px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
             }
             .email-body-title {
                 font-size: 11px !important;
+                flex: 1 !important;
+                min-width: 0 !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
             }
             .btn-copy-text {
-                padding: 5px 10px !important;
+                padding: 6px 10px !important;
                 font-size: 11px !important;
                 flex-shrink: 0 !important;
+                white-space: nowrap !important;
+                word-break: keep-all !important;
+                min-width: 82px !important;
+                text-align: center !important;
+                justify-content: center !important;
+                box-sizing: border-box !important;
             }
             .toast {
                 left: 10px !important;
@@ -2552,14 +2591,15 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                 showToast("No email text to copy", "info");
                 return;
             }
-            navigator.clipboard.writeText(text).then(() => {
+
+            const onCopySuccess = () => {
                 showToast("Email content copied to clipboard!", "success");
                 if (btn) {
                     const orig = btn.innerHTML;
                     btn.innerHTML = '✅ Copied!';
                     btn.style.borderColor = '#34d399';
                     btn.style.color = '#34d399';
-                    btn.style.background = 'rgba(52, 211, 153, 0.18)';
+                    btn.style.background = 'rgba(52, 211, 153, 0.2)';
                     setTimeout(() => {
                         btn.innerHTML = orig;
                         btn.style.borderColor = '';
@@ -2567,9 +2607,33 @@ SPA_HTML_TEMPLATE = """<!DOCTYPE html>
                         btn.style.background = '';
                     }, 2000);
                 }
-            }).catch(() => {
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(onCopySuccess).catch(() => {
+                    fallbackCopy(text, onCopySuccess);
+                });
+            } else {
+                fallbackCopy(text, onCopySuccess);
+            }
+        }
+
+        function fallbackCopy(text, onSuccess) {
+            try {
+                const ta = document.createElement("textarea");
+                ta.value = text;
+                ta.style.position = "fixed";
+                ta.style.left = "-9999px";
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                if (ok && onSuccess) onSuccess();
+                else showToast("Text copied to clipboard", "success");
+            } catch (err) {
                 showToast("Could not copy text", "error");
-            });
+            }
         }
 
         function filterEmailsTable() {
